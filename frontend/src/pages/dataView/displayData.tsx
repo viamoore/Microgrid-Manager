@@ -1,10 +1,9 @@
 const DataView = () => {
-	return (
-		<div className="w-full h-full flex flex-col p-4 justify-center">
-			<div className='flex justify-evenly p-2 pt-3 flex-wrap'>
-			</div>
-		</div>
-	);
+  return (
+    <div className="flex h-full w-full flex-col justify-center p-4">
+      <div className="flex flex-wrap justify-evenly p-2 pt-3"></div>
+    </div>
+  );
 };
 
 export default DataView;

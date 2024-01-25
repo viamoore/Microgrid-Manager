@@ -1,11 +1,11 @@
-import HeaderContent from './headerContent';
+import HeaderContent from "./headerContent";
 
 const HeaderComponent = () => {
-	return (
-		<div className='p-0 bg-white h-16 z-50 !fixed w-full'>
-			<HeaderContent />
-		</div>
-	);
+  return (
+    <div className="!fixed z-50 h-16 w-full bg-white p-0">
+      <HeaderContent />
+    </div>
+  );
 };
 
 export default HeaderComponent;

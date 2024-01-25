@@ -1,9 +1,5 @@
 const CloudBackup = () => {
-	return (
-		<div>
-			Incomplete
-		</div>
-	);
+  return <div>Incomplete</div>;
 };
 
 export default CloudBackup;

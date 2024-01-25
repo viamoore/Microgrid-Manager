@@ -1,23 +1,22 @@
-import { eGaugeData, requestBetweenPeriods } from './eGaugeTypes';
+import { eGaugeData, requestBetweenPeriods } from "./eGaugeTypes";
 
-const onLoadRequestConfig = () => {
-
-};
+const onLoadRequestConfig = () => {};
 
 const onloadRequest = (props: requestBetweenPeriods): eGaugeData[] | Error => {
-	const { source, startDate, endDate, target } = props;
+  const { source, startDate, endDate, target } = props;
+  console.log(source, startDate, endDate, target);
 
-	return [];
+  return [];
 };
 
 const readSSEResponse = (target: URL): EventSource => {
-	const eventSource = new EventSource(target);
-	eventSource.onerror = (event) => {
-		console.error('Error with SSE connection', event);
-		return eventSource.close();
-	};
+  const eventSource = new EventSource(target);
+  eventSource.onerror = (event) => {
+    console.error("Error with SSE connection", event);
+    return eventSource.close();
+  };
 
-	return eventSource;
+  return eventSource;
 };
 
 export { onloadRequest, readSSEResponse, onLoadRequestConfig };
