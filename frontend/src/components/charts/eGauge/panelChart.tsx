@@ -2,9 +2,33 @@ import { useRef, useState } from "react";
 import PanelChartSVG from "./panelChartSVG";
 
 import { Config, eGaugeData } from "./eGaugeTypes";
-import { SettingOutlined } from "@ant-design/icons";
-import { Alert, Input, Select, Tooltip } from "antd";
+import { Settings } from "lucide-react";
+import { Alert } from "antd";
 import { useMicrogrid } from "../../../context/useMicrogridContext";
+
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface PanelChartProps {
   height?: number;
@@ -86,34 +110,99 @@ const PanelChart: React.FC<PanelChartProps> = ({
   };
 
   return (
-    <div
-      key="1"
-      className={`w-[${width}px] group relative flex flex-col rounded-md bg-white`}
-    >
-      <div className="font-mediums flex h-auto items-center justify-between p-2 px-2 text-base">
-        <p>
-          <span>{configState.name}</span>
-          <span>:</span>
-          <span className="pl-2">
-            {dataSet.length > 0
-              ? Number(dataSet[dataSet.length - 1].value).toFixed(2)
-              : "0"}
-          </span>
-          <span>
-            {dataSet.length > 0 ? dataSet[dataSet.length - 1].unit : "W"}
-          </span>
-        </p>
-        <button
-          className={`${collapsed ? "hidden" : ""} pointer-events-none opacity-0 transition-opacity duration-200 ease-in-out group-hover:pointer-events-auto group-hover:opacity-100`}
-          onClick={() => {
-            setShowConfig(!showConfig);
-          }}
-        >
-          <SettingOutlined />
-        </button>
-      </div>
-      <div
-        className={`${collapsed ? "pointer-events-none h-0 opacity-0" : "h-[" + height + "] mt-2 p-2 opacity-100"} relative w-full flex-grow transition-all duration-100`}
+    <div className="relative overflow-hidden rounded-lg bg-gray-100 px-4 py-5 shadow-sm sm:p-6">
+      <dt className="truncate text-sm font-medium text-gray-500">
+        {configState.name}
+      </dt>
+      <dd className="mt-1 text-3xl font-semibold tracking-tight text-gray-900">
+        <span>
+          {dataSet.length > 0
+            ? Number(dataSet[dataSet.length - 1].value).toFixed(2)
+            : "0"}
+        </span>
+        <span>
+          {dataSet.length > 0 ? dataSet[dataSet.length - 1].unit : "W"}
+        </span>
+      </dd>
+
+      <Popover
+        open={showConfig}
+        onOpenChange={(isOpen) => {
+          if (!isOpen) setConfigState(config.chartCarouselConfigs[index]);
+
+          setShowConfig(isOpen);
+        }}
+      >
+        <PopoverTrigger asChild>
+          <Button
+            variant="ghost"
+            className="absolute right-0 top-0 m-3.5"
+            onClick={() => setShowConfig(!showConfig)}
+          >
+            <Settings
+              className="h-4 w-4"
+              aria-label={`${configState.name} settings`}
+            />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-80">
+          <span>{`${configState.name} settings`}</span>
+
+          <div className="space-y-2">
+            {Object.entries(configState).map(([key, value]) => (
+              <div key={key}>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Label htmlFor={key}>{key}</Label>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>{tooltipInfo[key]}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+                {key === "source" || key === "name" ? (
+                  <Input
+                    id={key}
+                    placeholder={value}
+                    onChange={(e) => handleEditInput(e, key)}
+                  />
+                ) : (
+                  <Select
+                    value={configState["period"]}
+                    defaultValue={value}
+                    onValueChange={(value: string) =>
+                      handleEditSelect(value, "period")
+                    }
+                  >
+                    <SelectTrigger id={key}>
+                      <SelectValue placeholder="How far back should the data be displayed" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectLabel>Period</SelectLabel>
+                        {displayOptions.map((option) => (
+                          <SelectItem value={option.value}>
+                            {option.value}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                )}
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-4 text-right">
+            <Button onClick={handleSave}>Save</Button>
+          </div>
+        </PopoverContent>
+      </Popover>
+
+      {/* <div
+        className={`${collapsed ? "pointer-events-none h-0 opacity-0" : "h-[" + height + "] mt-2 p-2 opacity-100"} 
+        relative w-full flex-grow rounded-lg bg-white transition-all duration-100`}
         ref={parentRef}
       >
         <PanelChartSVG
@@ -124,54 +213,8 @@ const PanelChart: React.FC<PanelChartProps> = ({
           parent={parentRef}
           config={configState}
         />
-      </div>
-      <div
-        className={`absolute flex h-full w-full items-center justify-center ${showConfig ? "" : "hidden"}`}
-      >
-        <div className="flex h-full w-3/4 flex-col rounded-md bg-slate-200 p-4">
-          <span>Modify Config</span>
-          <div className="my-2 h-0.5 border-t border-black" />
-          <div className="flex flex-col gap-y-2 overflow-auto">
-            {Object.entries(configState).map(([key, value]) => (
-              <div key={key}>
-                <Tooltip title={tooltipInfo[key]}>{key}: </Tooltip>
-                {key === "source" || key === "name" ? (
-                  <Input
-                    placeholder={value}
-                    onChange={(e) => handleEditInput(e, key)}
-                  />
-                ) : (
-                  <Select
-                    className="w-full"
-                    defaultValue={value}
-                    options={displayOptions}
-                    onChange={(value: string) =>
-                      handleEditSelect(value, "period")
-                    }
-                  />
-                )}
-              </div>
-            ))}
-          </div>
-          <div className="mt-auto flex gap-4">
-            <button
-              className="rounded-lg border border-black px-2 py-1 hover:bg-slate-100"
-              onClick={handleSave}
-            >
-              Save
-            </button>
-            <button
-              className="rounded-lg border border-black px-2 py-1 hover:bg-slate-100"
-              onClick={() => {
-                setShowConfig(false);
-                setConfigState(config.chartCarouselConfigs[index]);
-              }}
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
-      </div>
+      </div> */}
+
       {showAlert.show && (
         <Alert
           className="absolute w-full"

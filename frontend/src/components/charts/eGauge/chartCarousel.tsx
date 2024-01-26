@@ -20,8 +20,8 @@ interface eGaugePannel {
   data: eGaugeData[];
 }
 
-const PADDINGY = 16;
-const PADDINGX = 5;
+const PADDING_Y = 16;
+const PADDING_X = 5;
 
 const firstLoadData = async (time: string, source: string) => {
   try {
@@ -157,8 +157,8 @@ const ChartCarousel: React.FC<ChartCarouselProps> = ({
   // Loading the charts and the plus button
   useEffect(() => {
     if (carouselRef.current) {
-      const heightWithGap = height + PADDINGY;
-      const widthWithGap = width + PADDINGX;
+      const heightWithGap = height + PADDING_Y;
+      const widthWithGap = width + PADDING_X;
       const noPlus = true; // False if you want to show the plus button on new slides
       const newDivArray: JSX.Element[] = [];
       const divsPerSlide = Math.max(
@@ -248,26 +248,36 @@ const ChartCarousel: React.FC<ChartCarouselProps> = ({
   }, [carouselWidth, eGaugeInfo, height, isCollapsed, width]);
 
   return (
-    <div
-      className="group relative col-span-full col-start-1 w-full rounded-md py-2 shadow-sm"
-      ref={carouselRef}
-    >
-      <div className="h-full w-full">
-        <div className="carousel-parent">
-          <Carousel className="pb-8">
-            {divs.map((divElement) => divElement)}
-          </Carousel>
-        </div>
-      </div>
-      <div className="absolute right-0 top-0 flex h-10 w-10 items-center justify-center opacity-0 transition-all duration-200 group-hover:opacity-100">
-        <button
-          className="h-full w-full rounded-full"
-          onClick={() => setIsCollapsed(!isCollapsed)}
-        >
-          {isCollapsed ? <CaretDownOutlined /> : <CaretUpOutlined />}
-        </button>
-      </div>
-    </div>
+    // <div
+    //   className="group relative col-span-full col-start-1 w-full rounded-md py-2 shadow-sm"
+    //   ref={carouselRef}
+    // >
+    //   <div className="h-full w-full">
+    //     <div className="carousel-parent">
+    //       <Carousel className="pb-8">
+    //         {divs.map((divElement) => divElement)}
+    //       </Carousel>
+    //     </div>
+    //   </div>
+    //   <div className="absolute right-0 top-0 flex h-10 w-10 items-center justify-center opacity-0 transition-all duration-200 group-hover:opacity-100">
+    //     <button
+    //       className="h-full w-full rounded-full"
+    //       onClick={() => setIsCollapsed(!isCollapsed)}
+    //     >
+    //       {isCollapsed ? <CaretDownOutlined /> : <CaretUpOutlined />}
+    //     </button>
+    //   </div>
+    // </div>
+    <dl className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
+      {eGaugeInfo.map((eGaugeInstance, i) => (
+        <PanelChart
+          key={i}
+          index={i}
+          dataSet={eGaugeInstance.data}
+          collapsed={false}
+        />
+      ))}
+    </dl>
   );
 };
 

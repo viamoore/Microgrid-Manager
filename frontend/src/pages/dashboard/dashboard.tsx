@@ -24,9 +24,11 @@ const Dashboard = () => {
         <div>Recommendation:</div>
         <div>Body</div>
       </div>
-      <div className="col-span-full col-start-1 rounded-lg bg-gray-200 shadow-sm">
+
+      <div className="col-span-full col-start-1 rounded-lg shadow-sm">
         <ChartCarousel />
       </div>
+
       <div className="flex w-full flex-row gap-x-2">
         <div className="group flex w-3/4 flex-col rounded-lg bg-gray-200 p-4 shadow-sm">
           <BatteryChart />
