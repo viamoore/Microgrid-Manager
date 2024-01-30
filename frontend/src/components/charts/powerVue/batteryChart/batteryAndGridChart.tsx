@@ -1,14 +1,27 @@
 import { useEffect, useRef, useState } from "react";
-import { SettingOutlined } from "@ant-design/icons";
-import { Tooltip, Input, Alert } from "antd";
+import { useMicrogrid } from "../../../../context/useMicrogridContext";
 
 import BatteryCapacitySVG from "./batteryCapacitySVG";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Settings } from "lucide-react";
+import battery from "@/assets/battery.svg";
+import timer from "@/assets/timer.svg";
 
-import battery from "../../../../assets/battery.svg";
-import timer from "../../../../assets/timer.svg";
-
-import { Config, DataRequest_Once, DataStream } from "./batteryChartTypes";
-import { useMicrogrid } from "../../../../context/useMicrogridContext";
+import type { Config, DataRequest_Once, DataStream } from "./batteryChartTypes";
 
 const mockData: DataRequest_Once = {
   capacity: 15000,
@@ -31,12 +44,13 @@ const tooltipInfo: TooltipInfo = {
 const BatteryChart = () => {
   const parentRef = useRef<HTMLDivElement | null>(null);
   const eventSourceRef = useRef<EventSource | null>(null);
+
   const { config, setConfig } = useMicrogrid();
   const [configState, setConfigState] = useState(config.batteryChartConfigs);
   const [dataStream, setDataSteam] = useState<DataStream>({} as DataStream);
   const [showConfig, setShowConfig] = useState(false);
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
-  const [showAlert, setShowAlert] = useState({ content: "", show: false });
+
   useEffect(() => {
     if (parentRef.current) {
       setDimensions({
@@ -66,35 +80,98 @@ const BatteryChart = () => {
     const isDangerValid = configState.danger >= 0 && configState.danger <= 1;
     const isAnimationSpeedValid =
       configState.animationSpeed >= 1000 && configState.animationSpeed <= 10000;
+
     if (isValid && isWarningValid && isDangerValid && isAnimationSpeedValid) {
       setConfig({ ...config, batteryChartConfigs: configState });
       setConfigState({} as Config);
       setShowConfig(false);
-      setShowAlert({ content: "Success", show: true });
+      toast("Success", { description: "Saved new config settings." });
     } else {
-      setShowAlert({ content: "Invalid Input", show: true });
+      toast("Error", { description: "Invalid input." });
     }
-    setTimeout(() => {
-      setShowAlert({ content: "", show: false });
-    }, 2000);
   };
 
   return (
-    <div className="relative flex h-auto w-full flex-grow flex-col">
+    <div className="group flex h-auto w-full flex-grow flex-col">
       <div className="flex justify-between px-2 text-lg">
-        <span>Solar & Battery Status</span>
-        <button
-          className="opacity-0 transition-opacity group-hover:opacity-100"
-          onClick={() => {
-            setShowConfig(!showConfig);
-            setConfigState(config.batteryChartConfigs);
+        <h2>Solar & Battery Status</h2>
+
+        <Popover
+          open={showConfig}
+          onOpenChange={(isOpen) => {
+            if (!isOpen) setConfigState({} as Config);
+
+            setShowConfig(isOpen);
           }}
         >
-          <SettingOutlined />
-        </button>
+          <PopoverTrigger asChild>
+            <Button
+              variant="ghost"
+              className="absolute right-0 top-0 m-3.5 h-8 px-2 py-2"
+              onClick={() => {
+                setShowConfig(!showConfig);
+                setConfigState(config.batteryChartConfigs);
+              }}
+            >
+              <Settings
+                className="h-4 w-4 text-gray-400 group-hover:text-gray-950"
+                aria-label="Solar and battery status settings"
+              />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-80">
+            <span>Modify Config</span>
+
+            <div className="flex flex-col gap-y-2 overflow-auto">
+              {Object.entries(configState).map(([key, value]) => {
+                return (
+                  <div key={key}>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Label htmlFor={key}>{key}</Label>
+                        </TooltipTrigger>
+                        <TooltipContent>{tooltipInfo[key]}</TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+
+                    <Input
+                      id={key}
+                      name={key}
+                      placeholder={value}
+                      onChange={(e) => {
+                        setConfigState((prevState) => ({
+                          ...prevState,
+                          [key]: e.target.value,
+                        }));
+                      }}
+                    />
+                  </div>
+                );
+              })}
+            </div>
+            <div className="mt-auto flex justify-between gap-4 pt-4">
+              <button
+                className="rounded-lg border border-black px-2 py-1 hover:bg-slate-100"
+                onClick={() => {
+                  setShowConfig(false);
+                  setConfigState({} as Config);
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                className="rounded-lg border border-black px-2 py-1 hover:bg-slate-100"
+                onClick={handleSave}
+              >
+                Save
+              </button>
+            </div>
+          </PopoverContent>
+        </Popover>
       </div>
-      <div className="my-2 h-0.5 border-t border-black" />
-      <div className="h-full max-h-[350px] px-2 pt-2" ref={parentRef}>
+
+      <div className="h-full max-h-[350px] px-2 pt-6" ref={parentRef}>
         <BatteryCapacitySVG
           data={dataStream}
           height={dimensions.height}
@@ -103,80 +180,35 @@ const BatteryChart = () => {
           config={config.batteryChartConfigs}
         />
       </div>
-      <div className="flex justify-evenly gap-2 px-2">
-        <div className="flex items-center gap-2">
-          <img className="flex h-10 w-10 content-center" src={battery} />
-          <div className="flex flex-col ">
-            <span className="text-lg text-blue-300">
+
+      <div className="flex items-center justify-evenly gap-2 px-2">
+        <div className="flex items-center gap-x-2">
+          <img className="flex h-8 w-8 content-center" src={battery} />
+          <div className="flex flex-col">
+            <span className="text-lg text-blue-400">
               {mockData.capacity / 1000}kWh
             </span>
-            <span>Capacity</span>
+            <h3>Capacity</h3>
           </div>
         </div>
+
         <div className="flex items-center gap-2">
-          <img src={timer} className="flex h-10 w-10 items-center" />
-          <div className="flex flex-col ">
-            <Tooltip
-              className="text-lg text-green-400"
-              title="Target Battery Charge: 100%"
-            >
-              Low Risk
-            </Tooltip>
-            <span>Mode</span>
+          <img src={timer} className="flex h-8 w-8 items-center" />
+          <div className="flex flex-col">
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span className="text-lg text-green-400">Low risk</span>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Target battery charge: 100%</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            <h3>Mode</h3>
           </div>
         </div>
       </div>
-      <div
-        className={`left absolute flex h-full w-full items-center justify-center ${showConfig ? "" : "hidden"}`}
-      >
-        <div className="flex h-full w-4/5 flex-col rounded-md bg-slate-200 p-4 sm:w-1/2">
-          <span>Modify Config</span>
-          <div className="my-2 h-0.5 border-t border-black" />
-          <div className="flex flex-col gap-y-2 overflow-auto">
-            {Object.entries(configState).map(([key, value]) => {
-              return (
-                <div key={key}>
-                  <Tooltip title={tooltipInfo[key]}>{key}: </Tooltip>
-                  <Input
-                    placeholder={value}
-                    onChange={(e) => {
-                      setConfigState((prevState) => ({
-                        ...prevState,
-                        [key]: e.target.value,
-                      }));
-                    }}
-                  />
-                </div>
-              );
-            })}
-          </div>
-          <div className="mt-auto flex justify-between gap-4">
-            <button
-              className="rounded-lg border border-black px-2 py-1 hover:bg-slate-100"
-              onClick={handleSave}
-            >
-              Save
-            </button>
-            <button
-              className="rounded-lg border border-black px-2 py-1 hover:bg-slate-100"
-              onClick={() => {
-                setShowConfig(false);
-                setConfigState({} as Config);
-              }}
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
-      </div>
-      {showAlert.show && (
-        <Alert
-          className="absolute w-full"
-          message={showAlert.content}
-          type={showAlert.content === "Success" ? "success" : "error"}
-          showIcon
-        />
-      )}
     </div>
   );
 };

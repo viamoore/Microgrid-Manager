@@ -30,9 +30,10 @@ const Dashboard = () => {
       </div>
 
       <div className="flex w-full flex-row gap-x-2">
-        <div className="group flex w-3/4 flex-col rounded-lg bg-gray-200 p-4 shadow-sm">
+        <div className="relative flex w-3/4 flex-col rounded-lg bg-gray-100 p-4 shadow-sm">
           <BatteryChart />
         </div>
+
         <div className="w-full rounded-lg bg-gray-200">
           <WidgetLayout widgets={widgets} />
         </div>

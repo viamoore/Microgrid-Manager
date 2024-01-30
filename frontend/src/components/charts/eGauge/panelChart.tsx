@@ -157,7 +157,7 @@ const PanelChart: React.FC<PanelChartProps> = ({ index, data }) => {
                       <SelectGroup>
                         <SelectLabel>Period</SelectLabel>
                         {displayOptions.map((option) => (
-                          <SelectItem value={option.value}>
+                          <SelectItem value={option.value} key={option.value}>
                             {option.value}
                           </SelectItem>
                         ))}
