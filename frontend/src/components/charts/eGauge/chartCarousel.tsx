@@ -9,6 +9,7 @@ import PanelChart from "./panelChart";
 import { useMicrogrid } from "../../../context/useMicrogridContext";
 import { readSSEResponse } from "./eGaugeDataRequester";
 import { Config, eGaugeData, eGaugeDataStream } from "./eGaugeTypes";
+import useEGaugeConfigStore from "./store";
 
 interface ChartCarouselProps {
   height?: number;
@@ -45,45 +46,59 @@ const ChartCarousel: React.FC<ChartCarouselProps> = ({
   height = 300,
   width = 330,
 }) => {
-  const [divs, setDivs] = useState<JSX.Element[]>([]);
-  const [isCollapsed, setIsCollapsed] = useState(true);
-  const carouselRef = useRef<HTMLDivElement>(null);
-  const resizeObserver = useRef<ResizeObserver | undefined>(undefined);
-  const [carouselWidth, setCarouselWidth] = useState(0);
-  const { config } = useMicrogrid();
-  const eventSourceRef = useRef<EventSource | null>(null);
+  const { config } = useEGaugeConfigStore();
 
   const [eGaugeInfo, seteGaugeInfo] = useState<eGaugePannel[]>(
-    config.chartCarouselConfigs.map((eGaugeConfig: Config) => {
+    config.map((eGaugeConfig: Config) => {
       return { config: eGaugeConfig, data: [] as eGaugeData[] };
     }),
   );
 
   const [eGaugeSources] = useState(
-    config.chartCarouselConfigs.map((eGaugeConfig: Config) => {
+    config.map((eGaugeConfig: Config) => {
       return eGaugeConfig.source;
     }),
   );
 
-  const updateSize = () => {
-    if (carouselRef.current) {
-      setCarouselWidth(carouselRef.current.offsetWidth);
-    }
-  };
+  const [divs, setDivs] = useState<JSX.Element[]>([]);
+  const [isCollapsed, setIsCollapsed] = useState(true);
+  const carouselRef = useRef<HTMLDivElement>(null);
+  const resizeObserver = useRef<ResizeObserver | undefined>(undefined);
+  const [carouselWidth, setCarouselWidth] = useState(0);
+  // const { config } = useMicrogrid();
+  const eventSourceRef = useRef<EventSource | null>(null);
+
+  // const [eGaugeInfo, seteGaugeInfo] = useState<eGaugePannel[]>(
+  //   config.chartCarouselConfigs.map((eGaugeConfig: Config) => {
+  //     return { config: eGaugeConfig, data: [] as eGaugeData[] };
+  //   }),
+  // );
+
+  // const [eGaugeSources] = useState(
+  //   config.chartCarouselConfigs.map((eGaugeConfig: Config) => {
+  //     return eGaugeConfig.source;
+  //   }),
+  // );
+
+  // const updateSize = () => {
+  //   if (carouselRef.current) {
+  //     setCarouselWidth(carouselRef.current.offsetWidth);
+  //   }
+  // };
 
   // Make sure that the carousel is dependent on the size of the screen and its parent
-  useEffect(() => {
-    const currentCarouselRef = carouselRef.current;
-    resizeObserver.current = new ResizeObserver(updateSize);
-    if (currentCarouselRef) {
-      resizeObserver.current.observe(currentCarouselRef);
-    }
-    return () => {
-      if (resizeObserver.current && currentCarouselRef) {
-        resizeObserver.current.unobserve(currentCarouselRef);
-      }
-    };
-  }, []);
+  // useEffect(() => {
+  //   const currentCarouselRef = carouselRef.current;
+  //   resizeObserver.current = new ResizeObserver(updateSize);
+  //   if (currentCarouselRef) {
+  //     resizeObserver.current.observe(currentCarouselRef);
+  //   }
+  //   return () => {
+  //     if (resizeObserver.current && currentCarouselRef) {
+  //       resizeObserver.current.unobserve(currentCarouselRef);
+  //     }
+  //   };
+  // }, []);
 
   // Load the data for the first time
   useEffect(() => {
@@ -155,97 +170,97 @@ const ChartCarousel: React.FC<ChartCarouselProps> = ({
   }, [eGaugeSources]);
 
   // Loading the charts and the plus button
-  useEffect(() => {
-    if (carouselRef.current) {
-      const heightWithGap = height + PADDING_Y;
-      const widthWithGap = width + PADDING_X;
-      const noPlus = true; // False if you want to show the plus button on new slides
-      const newDivArray: JSX.Element[] = [];
-      const divsPerSlide = Math.max(
-        1,
-        Math.floor(carouselWidth / widthWithGap),
-      );
-      let divsInThisSlide: JSX.Element[] = [];
-      eGaugeInfo.forEach((eGaugeInstance, index) => {
-        divsInThisSlide.push(
-          <PanelChart
-            key={index}
-            index={index}
-            dataSet={eGaugeInstance.data}
-            collapsed={isCollapsed}
-          />,
-        );
-        if (divsInThisSlide.length === divsPerSlide) {
-          newDivArray.push(
-            <div
-              key={`slide-${index}`}
-              className="!flex flex-row justify-evenly p-2 pt-3"
-            >
-              {divsInThisSlide}
-            </div>,
-          );
-          divsInThisSlide = [];
-        }
-      });
+  // useEffect(() => {
+  //   if (carouselRef.current) {
+  //     const heightWithGap = height + PADDING_Y;
+  //     const widthWithGap = width + PADDING_X;
+  //     const noPlus = true; // False if you want to show the plus button on new slides
+  //     const newDivArray: JSX.Element[] = [];
+  //     const divsPerSlide = Math.max(
+  //       1,
+  //       Math.floor(carouselWidth / widthWithGap),
+  //     );
+  //     let divsInThisSlide: JSX.Element[] = [];
+  //     eGaugeInfo.forEach((eGaugeInstance, index) => {
+  //       divsInThisSlide.push(
+  //         <PanelChart
+  //           key={index}
+  //           index={index}
+  //           dataSet={eGaugeInstance.data}
+  //           collapsed={isCollapsed}
+  //         />,
+  //       );
+  //       if (divsInThisSlide.length === divsPerSlide) {
+  //         newDivArray.push(
+  //           <div
+  //             key={`slide-${index}`}
+  //             className="!flex flex-row justify-evenly p-2 pt-3"
+  //           >
+  //             {divsInThisSlide}
+  //           </div>,
+  //         );
+  //         divsInThisSlide = [];
+  //       }
+  //     });
 
-      if (divsInThisSlide.length > 0) {
-        const fillerCount = divsPerSlide - divsInThisSlide.length;
-        if (fillerCount > 0) {
-          const fillerDivs = Array.from({ length: fillerCount }, (_, index) => (
-            <div
-              key={`filler-${index}`}
-              className={`w-[${width}px] group flex items-center justify-center`}
-            >
-              <button className="h-8 w-20 rounded-full bg-white opacity-0 transition-opacity duration-500 ease-in-out group-hover:opacity-100">
-                <PlusOutlined />
-              </button>
-            </div>
-          ));
-          divsInThisSlide = [...divsInThisSlide, ...fillerDivs];
-          // noPlus = true;
-        }
-        newDivArray.push(
-          <div
-            key={`slide-${eGaugeInfo.length}`}
-            className={`h-[${heightWithGap}px] !flex flex-row justify-evenly p-2 pt-3`}
-          >
-            {divsInThisSlide}
-          </div>,
-        );
-      }
+  //     if (divsInThisSlide.length > 0) {
+  //       const fillerCount = divsPerSlide - divsInThisSlide.length;
+  //       if (fillerCount > 0) {
+  //         const fillerDivs = Array.from({ length: fillerCount }, (_, index) => (
+  //           <div
+  //             key={`filler-${index}`}
+  //             className={`w-[${width}px] group flex items-center justify-center`}
+  //           >
+  //             <button className="h-8 w-20 rounded-full bg-white opacity-0 transition-opacity duration-500 ease-in-out group-hover:opacity-100">
+  //               <PlusOutlined />
+  //             </button>
+  //           </div>
+  //         ));
+  //         divsInThisSlide = [...divsInThisSlide, ...fillerDivs];
+  //         // noPlus = true;
+  //       }
+  //       newDivArray.push(
+  //         <div
+  //           key={`slide-${eGaugeInfo.length}`}
+  //           className={`h-[${heightWithGap}px] !flex flex-row justify-evenly p-2 pt-3`}
+  //         >
+  //           {divsInThisSlide}
+  //         </div>,
+  //       );
+  //     }
 
-      if (!noPlus) {
-        let divsInThisSlide: JSX.Element[] = [];
-        for (let i = 0; i < divsPerSlide; i++) {
-          const fillerDivs = Array.from(
-            { length: divsPerSlide - divsInThisSlide.length },
-            (_, index) => (
-              <div
-                key={`filler-${index}`}
-                className="flex h-[300px] w-[330px] items-center justify-center"
-              >
-                {" "}
-                <button className="h-16 w-16 rounded-full bg-white">
-                  <PlusOutlined />
-                </button>{" "}
-              </div>
-            ),
-          );
-          divsInThisSlide = [...divsInThisSlide, ...fillerDivs];
-        }
-        newDivArray.push(
-          <div
-            key={`slide-${2}`}
-            className={`h-[${heightWithGap}px] !flex flex-row justify-evenly p-2 pt-3`}
-          >
-            {divsInThisSlide}
-          </div>,
-        );
-      }
+  //     if (!noPlus) {
+  //       let divsInThisSlide: JSX.Element[] = [];
+  //       for (let i = 0; i < divsPerSlide; i++) {
+  //         const fillerDivs = Array.from(
+  //           { length: divsPerSlide - divsInThisSlide.length },
+  //           (_, index) => (
+  //             <div
+  //               key={`filler-${index}`}
+  //               className="flex h-[300px] w-[330px] items-center justify-center"
+  //             >
+  //               {" "}
+  //               <button className="h-16 w-16 rounded-full bg-white">
+  //                 <PlusOutlined />
+  //               </button>{" "}
+  //             </div>
+  //           ),
+  //         );
+  //         divsInThisSlide = [...divsInThisSlide, ...fillerDivs];
+  //       }
+  //       newDivArray.push(
+  //         <div
+  //           key={`slide-${2}`}
+  //           className={`h-[${heightWithGap}px] !flex flex-row justify-evenly p-2 pt-3`}
+  //         >
+  //           {divsInThisSlide}
+  //         </div>,
+  //       );
+  //     }
 
-      setDivs(newDivArray);
-    }
-  }, [carouselWidth, eGaugeInfo, height, isCollapsed, width]);
+  //     setDivs(newDivArray);
+  //   }
+  // }, [carouselWidth, eGaugeInfo, height, isCollapsed, width]);
 
   return (
     // <div
@@ -270,13 +285,12 @@ const ChartCarousel: React.FC<ChartCarouselProps> = ({
     // </div>
     <dl className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
       {eGaugeInfo.map((eGaugeInstance, i) => (
-        <PanelChart
-          key={i}
-          index={i}
-          dataSet={eGaugeInstance.data}
-          collapsed={false}
-        />
+        <PanelChart key={i} index={i} dataSet={eGaugeInstance.data} />
       ))}
+
+      {/* {EGaugeConfig.map((eGaugeInstance, i) => (
+        <PanelChart dataSet={eGaugeInstance} />
+      ))} */}
     </dl>
   );
 };

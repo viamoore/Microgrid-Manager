@@ -29,13 +29,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import useEGaugeConfigStore from "./store";
 
 interface PanelChartProps {
   height?: number;
   width?: number;
   index: number;
   dataSet: eGaugeData[];
-  collapsed: boolean;
 }
 
 type TooltipInfo = {
@@ -67,8 +67,9 @@ const PanelChart: React.FC<PanelChartProps> = ({
   height = 300,
   width = 330,
   dataSet,
-  collapsed,
 }) => {
+  const { saveConfigValues } = useEGaugeConfigStore();
+
   const parentRef = useRef<HTMLDivElement | null>(null);
   const [showConfig, setShowConfig] = useState(false);
   const [showAlert, setShowAlert] = useState({ content: "", show: false });
@@ -93,6 +94,7 @@ const PanelChart: React.FC<PanelChartProps> = ({
       (value) => value !== undefined && value !== null,
     );
     if (isValid) {
+      saveConfigValues({ newConfigState: configState });
       const newChartCarouselConfigs = [...config.chartCarouselConfigs];
       newChartCarouselConfigs[index] = configState;
       setConfig((prevConfig) => ({
