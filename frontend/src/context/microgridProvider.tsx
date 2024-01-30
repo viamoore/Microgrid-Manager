@@ -6,7 +6,6 @@ import {
 import {
   BatteryChartConfig,
   EnergyGenerationConfig,
-  eGaugeConfig,
 } from "../interfaces/configurationTypes";
 
 export const MicrogridContext = createContext<MicrogridState | undefined>(
@@ -14,23 +13,6 @@ export const MicrogridContext = createContext<MicrogridState | undefined>(
 );
 
 const dashboardConfigMock = {
-  chartCarouselConfigs: [
-    {
-      name: "Kitchen",
-      source: "S1_L1",
-      period: "30 seconds",
-    } as eGaugeConfig,
-    {
-      name: "HVAC",
-      source: "S7_L1",
-      period: "30 seconds",
-    } as eGaugeConfig,
-    {
-      name: "WATER",
-      source: "S9_L1",
-      period: "1 minute",
-    } as eGaugeConfig,
-  ],
   batteryChartConfigs: {
     warning: 0.4,
     danger: 0.2,

@@ -6,20 +6,21 @@ import PanelChart from "./panelChart";
 
 import type { Config, eGaugeData, eGaugeDataStream } from "./eGaugeTypes";
 
-interface ChartCarouselProps {
-  height?: number;
-  width?: number;
-}
-
 interface eGaugePannel {
   config: Config;
   data: eGaugeData[];
 }
 
-const firstLoadData = async (time: string, source: string) => {
+const firstLoadData = async ({
+  period,
+  source,
+}: {
+  period: string;
+  source: string;
+}) => {
   try {
     const response = await fetch(
-      `http://localhost:8080/egaugetime?time=${time}&dataname=${source}`,
+      `http://localhost:8080/egaugetime?time=${period}&dataname=${source}`,
     );
     const data = await response.json();
 
@@ -34,56 +35,60 @@ const firstLoadData = async (time: string, source: string) => {
   }
 };
 
-const ChartCarousel: React.FC<ChartCarouselProps> = () => {
+const ChartCarousel: React.FC = () => {
   const { config } = useEGaugeConfigStore();
+  const eGaugeSources = config.map((eGaugeConfig: Config) => {
+    return eGaugeConfig.source;
+  });
 
+  const [dataLoaded, setDataLoaded] = useState(false);
   const [eGaugeInfo, seteGaugeInfo] = useState<eGaugePannel[]>(
     config.map((eGaugeConfig: Config) => {
       return { config: eGaugeConfig, data: [] as eGaugeData[] };
     }),
   );
-  const [eGaugeSources] = useState(
-    config.map((eGaugeConfig: Config) => {
-      return eGaugeConfig.source;
-    }),
-  );
 
   const eventSourceRef = useRef<EventSource | null>(null);
 
-  // Load the data for the first time
   useEffect(() => {
-    eGaugeSources.forEach((source) => {
-      const eGaugeInstance = eGaugeInfo.find(
-        (eGaugeInstance) => eGaugeInstance.config.source === source,
-      );
-      if (!eGaugeInstance) return;
-      firstLoadData(
-        eGaugeInstance.config.period,
-        eGaugeInstance.config.source,
-      ).then((data) => {
-        seteGaugeInfo((prevInfo) => {
-          const updatedInfo = prevInfo.map((eGaugeInstance) => {
-            if (eGaugeInstance.config.source === source) {
-              return {
-                ...eGaugeInstance,
-                data: data,
-              };
-            }
-            return eGaugeInstance;
+    // Load the data for the first time
+    if (!dataLoaded) {
+      eGaugeSources.forEach((source) => {
+        const eGaugeInstance = eGaugeInfo.find(
+          (eGaugeInstance) => eGaugeInstance.config.source === source,
+        );
+        if (!eGaugeInstance) return;
+
+        firstLoadData({
+          period: eGaugeInstance.config.period,
+          source: eGaugeInstance.config.source,
+        }).then((data) => {
+          seteGaugeInfo((prevInfo) => {
+            const updatedInfo = prevInfo.map((eGaugeInstance) => {
+              if (eGaugeInstance.config.source === source) {
+                return {
+                  ...eGaugeInstance,
+                  data: data,
+                };
+              }
+              return eGaugeInstance;
+            });
+
+            return updatedInfo;
           });
-          return updatedInfo;
         });
       });
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [eGaugeSources]);
 
-  // Create EventSource and read data from it
-  useEffect(() => {
+      setDataLoaded(true);
+      return;
+    }
+
+    // Create EventSource and read data from it
     if (!eventSourceRef.current) {
       eventSourceRef.current = readSSEResponse(
         new URL("http://localhost:8080/egauge"),
       );
+
       eventSourceRef.current.onmessage = (event) => {
         const parsedData: eGaugeDataStream = JSON.parse(event.data);
         const dateTime = new Date(parsedData.dateTime);
@@ -94,6 +99,7 @@ const ChartCarousel: React.FC<ChartCarouselProps> = () => {
             value: dataEntry as number,
             unit: "W",
           };
+
           seteGaugeInfo((prevInfo) => {
             const updatedInfo = prevInfo.map((eGaugeInstance) => {
               if (eGaugeInstance.config.source === source) {
@@ -117,11 +123,7 @@ const ChartCarousel: React.FC<ChartCarouselProps> = () => {
         eventSourceRef.current = null;
       }
     };
-  }, [eGaugeSources]);
-
-  useEffect(() => {
-    console.log(config);
-  }, [config]);
+  }, [eGaugeSources, dataLoaded]);
 
   return (
     <dl className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
