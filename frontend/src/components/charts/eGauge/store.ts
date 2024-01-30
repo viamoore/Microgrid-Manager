@@ -8,6 +8,11 @@ interface EGaugeConfig {
 
 interface EGaugeConfigState {
   config: EGaugeConfig[];
+  saveConfigValues: ({
+    newConfigState,
+  }: {
+    newConfigState: EGaugeConfig;
+  }) => void;
 }
 
 const mockEGaugeConfig = [
@@ -30,23 +35,6 @@ const mockEGaugeConfig = [
 
 const useEGaugeConfigStore = create<EGaugeConfigState>((set) => ({
   config: mockEGaugeConfig,
-  updateConfigValues: ({
-    name,
-    key,
-    value,
-  }: {
-    name: string;
-    key: "name" | "source" | "period";
-    value: string;
-  }) =>
-    set((state) => {
-      const newState = state.config;
-
-      const idx = newState.findIndex((config) => config.name === name);
-      newState[idx][key] = value;
-
-      return { ...state, config: newState };
-    }),
   saveConfigValues: ({ newConfigState }: { newConfigState: EGaugeConfig }) =>
     set((state) => {
       const isValid = Object.values(newConfigState).every(

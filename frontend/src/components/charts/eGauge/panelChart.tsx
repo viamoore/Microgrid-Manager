@@ -1,11 +1,8 @@
-import { useRef, useState } from "react";
-import PanelChartSVG from "./panelChartSVG";
+import { useState } from "react";
+import useEGaugeConfigStore from "./store";
 
-import { Config, eGaugeData } from "./eGaugeTypes";
-import { Settings } from "lucide-react";
+// import PanelChartSVG from "./panelChartSVG";
 import { Alert } from "antd";
-import { useMicrogrid } from "../../../context/useMicrogridContext";
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -29,13 +26,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import useEGaugeConfigStore from "./store";
+import { Settings } from "lucide-react";
+
+import type { Config, eGaugeData } from "./eGaugeTypes";
 
 interface PanelChartProps {
-  height?: number;
-  width?: number;
   index: number;
-  dataSet: eGaugeData[];
+  data: eGaugeData[];
 }
 
 type TooltipInfo = {
@@ -53,40 +50,25 @@ const tooltipInfo: TooltipInfo = {
 };
 
 const displayOptions = [
-  { value: "30 sec", label: "30 sec" },
+  { value: "30 seconds", label: "30 seconds" },
   { value: "1 minute", label: "1 minute" },
-  { value: "5 minute", label: "5 minute" },
-  { value: "10 minute", label: "10 minute" },
-  { value: "15 minute", label: "15 minute" },
-  { value: "30 minute", label: "30 minute" },
+  { value: "5 minutes", label: "5 minutes" },
+  { value: "10 minutes", label: "10 minutes" },
+  { value: "15 minutes", label: "15 minutes" },
+  { value: "30 minutes", label: "30 minutes" },
   { value: "1 hour", label: "1 hour" },
 ];
 
-const PanelChart: React.FC<PanelChartProps> = ({
-  index,
-  height = 300,
-  width = 330,
-  dataSet,
-}) => {
-  const { saveConfigValues } = useEGaugeConfigStore();
+const PanelChart: React.FC<PanelChartProps> = ({ index, data }) => {
+  const { config, saveConfigValues } = useEGaugeConfigStore();
 
-  const parentRef = useRef<HTMLDivElement | null>(null);
+  // const parentRef = useRef<HTMLDivElement | null>(null);
   const [showConfig, setShowConfig] = useState(false);
+  const [configState, setConfigState] = useState<Config>(config[index]);
   const [showAlert, setShowAlert] = useState({ content: "", show: false });
-  const { config, setConfig } = useMicrogrid();
-  const [configState, setConfigState] = useState<Config>(
-    config.chartCarouselConfigs[index],
-  );
 
-  const handleEditInput = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    key: string,
-  ) => {
-    setConfigState((prevState) => ({ ...prevState, [key]: e.target.value }));
-  };
-
-  const handleEditSelect = (value: string, target: string) => {
-    setConfigState((prevState) => ({ ...prevState, [target]: value }));
+  const handleEditInput = (key: string, value: string) => {
+    setConfigState((prevState) => ({ ...prevState, [key]: value }));
   };
 
   const handleSave = () => {
@@ -95,17 +77,13 @@ const PanelChart: React.FC<PanelChartProps> = ({
     );
     if (isValid) {
       saveConfigValues({ newConfigState: configState });
-      const newChartCarouselConfigs = [...config.chartCarouselConfigs];
-      newChartCarouselConfigs[index] = configState;
-      setConfig((prevConfig) => ({
-        ...prevConfig,
-        chartCarouselConfigs: newChartCarouselConfigs,
-      }));
+
       setShowConfig(false);
       setShowAlert({ content: "Success", show: true });
     } else {
       setShowAlert({ content: "Invalid Input", show: true });
     }
+
     setTimeout(() => {
       setShowAlert({ content: "", show: false });
     }, 2000);
@@ -118,19 +96,17 @@ const PanelChart: React.FC<PanelChartProps> = ({
       </dt>
       <dd className="mt-1 text-3xl font-semibold tracking-tight text-gray-900">
         <span>
-          {dataSet.length > 0
-            ? Number(dataSet[dataSet.length - 1].value).toFixed(2)
+          {data.length > 0
+            ? Number(data[data.length - 1].value).toFixed(2)
             : "0"}
         </span>
-        <span>
-          {dataSet.length > 0 ? dataSet[dataSet.length - 1].unit : "W"}
-        </span>
+        <span>{data.length > 0 ? data[data.length - 1].unit : "W"}</span>
       </dd>
 
       <Popover
         open={showConfig}
         onOpenChange={(isOpen) => {
-          if (!isOpen) setConfigState(config.chartCarouselConfigs[index]);
+          if (!isOpen) setConfigState(config[index]);
 
           setShowConfig(isOpen);
         }}
@@ -167,14 +143,14 @@ const PanelChart: React.FC<PanelChartProps> = ({
                   <Input
                     id={key}
                     placeholder={value}
-                    onChange={(e) => handleEditInput(e, key)}
+                    onChange={(e) => handleEditInput(key, e.target.value)}
                   />
                 ) : (
                   <Select
                     value={configState["period"]}
                     defaultValue={value}
                     onValueChange={(value: string) =>
-                      handleEditSelect(value, "period")
+                      handleEditInput("period", value)
                     }
                   >
                     <SelectTrigger id={key}>
@@ -210,7 +186,7 @@ const PanelChart: React.FC<PanelChartProps> = ({
         <PanelChartSVG
           height={150}
           width={250}
-          data={dataSet}
+          data={data}
           unit={"W"}
           parent={parentRef}
           config={configState}
