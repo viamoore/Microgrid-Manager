@@ -45,6 +45,7 @@ const MicrogridProvider: React.FC<ProviderProps> = ({ children }) => {
   const [collapsed, setCollapsed] = useState(
     JSON.parse(localStorage.getItem("collapsed") ?? "false"),
   );
+
   const [windowSize, setWindowSize] = useState({
     width: window.innerWidth,
     height: window.innerHeight,

@@ -11,7 +11,7 @@ const SidebarComponent = () => {
       collapsed={collapsed}
       onCollapse={() => toggleCollapsed()}
     >
-      <SidebarContent collapsed={collapsed} />
+      <SidebarContent />
     </Sider>
   );
 };
