@@ -2,7 +2,7 @@ import { useState } from "react";
 import useEGaugeConfigStore from "./store";
 
 // import PanelChartSVG from "./panelChartSVG";
-import { Alert } from "antd";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -65,7 +65,6 @@ const PanelChart: React.FC<PanelChartProps> = ({ index, data }) => {
   // const parentRef = useRef<HTMLDivElement | null>(null);
   const [showConfig, setShowConfig] = useState(false);
   const [configState, setConfigState] = useState<Config>(config[index]);
-  const [showAlert, setShowAlert] = useState({ content: "", show: false });
 
   const handleEditInput = (key: string, value: string) => {
     setConfigState((prevState) => ({ ...prevState, [key]: value }));
@@ -73,20 +72,18 @@ const PanelChart: React.FC<PanelChartProps> = ({ index, data }) => {
 
   const handleSave = () => {
     const isValid = Object.values(configState).every(
-      (value) => value !== undefined && value !== null,
+      (value) => value !== undefined && value !== null && value.length !== 0,
     );
     if (isValid) {
       saveConfigValues({ newConfigState: configState });
 
       setShowConfig(false);
-      setShowAlert({ content: "Success", show: true });
+      toast(`Successfully updated ${configState.name}`);
     } else {
-      setShowAlert({ content: "Invalid Input", show: true });
+      toast(`Failed to update ${configState.name}`, {
+        description: "Invalid input.",
+      });
     }
-
-    setTimeout(() => {
-      setShowAlert({ content: "", show: false });
-    }, 2000);
   };
 
   return (
@@ -192,15 +189,6 @@ const PanelChart: React.FC<PanelChartProps> = ({ index, data }) => {
           config={configState}
         />
       </div> */}
-
-      {showAlert.show && (
-        <Alert
-          className="absolute w-full"
-          message={showAlert.content}
-          type={showAlert.content === "Success" ? "success" : "error"}
-          showIcon
-        />
-      )}
     </div>
   );
 };
