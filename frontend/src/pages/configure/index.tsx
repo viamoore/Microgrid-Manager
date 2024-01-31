@@ -33,7 +33,7 @@ export default function ConfigPage() {
           <TabsTrigger value="log">Log</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="general" className="w-full max-w-2xl px-6 pt-4">
+        <TabsContent value="general" className="w-full max-w-2xl px-6 pt-6">
           <div>
             <h3 className="text-lg font-medium">Device name</h3>
             <p className="text-gray-500">
@@ -90,15 +90,15 @@ export default function ConfigPage() {
             </div>
           </div>
         </TabsContent>
-        <TabsContent value="log" className="w-full max-w-2xl px-6 pt-4">
+        <TabsContent value="log" className="w-full max-w-2xl px-6 pt-6">
           <div>
             <h3 className="text-lg font-medium">Log frequency</h3>
             <p className="text-gray-500">How often data should be logged.</p>
 
             <div className="mt-4 flex items-center gap-x-4">
               <Select>
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Select a fruit" />
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Frequency" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>

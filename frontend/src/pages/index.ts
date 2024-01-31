@@ -8,7 +8,8 @@ import DeviceManagement from "./manageDevice";
 import DataView from "./dataView/displayData";
 import LogPage from "./readLog/toLog";
 import CloudBackup from "./backupToCloud/cloudBackup";
-import GeneralSetting from "./generalSetting/generalSettings";
+// import GeneralSetting from "./generalSetting/generalSettings";
+import GeneralSetting from "./generalSetting";
 
 export {
   Dashboard,
