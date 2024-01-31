@@ -11,27 +11,33 @@ import { Bell, Boxes } from "lucide-react";
 
 const Header = () => {
   return (
-    <div className="flex items-center justify-between border-b px-6 py-3">
+    <div className="flex items-center justify-between border-b px-6 py-[11px]">
       <div>Header</div>
       <div className="flex items-center gap-x-3">
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button variant="outline" className="h-fit rounded-full px-2">
-              <Boxes aria-label="Processes" className="h-4 w-4" />
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="text-xs">
-            <span className="font-medium">Processes</span>
-            <div className="mt-1">
-              <div className="py-2">
-                <p>No running processes.</p>
-              </div>
-            </div>
-          </PopoverContent>
-        </Popover>
+        <Processes />
         <Notifications />
       </div>
     </div>
+  );
+};
+
+const Processes = () => {
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <Button variant="outline" className="h-fit rounded-full px-2">
+          <Boxes aria-label="Processes" className="h-4 w-4" />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="text-xs">
+        <span className="font-medium">Processes</span>
+        <div className="mt-1">
+          <div className="py-2">
+            <p>No running processes.</p>
+          </div>
+        </div>
+      </PopoverContent>
+    </Popover>
   );
 };
 

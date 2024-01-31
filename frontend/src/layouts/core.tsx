@@ -61,13 +61,13 @@ const CoreLayout = () => {
         >
           <Sidebar collapsed={collapsed} />
         </ResizablePanel>
-        <ResizableHandle />
+        <ResizableHandle className="bg-gray-100" />
         <ResizablePanel
           order={1}
           className="flex min-h-screen w-full flex-col justify-between"
         >
-          <div className="h-screen w-full bg-gray-100 p-2">
-            <div className="flex h-full min-h-full w-full flex-col overflow-y-scroll rounded-xl bg-white shadow-sm ring-1 ring-gray-200">
+          <div className="h-screen w-full bg-gray-100 py-2 pr-2">
+            <div className="flex h-full min-h-full max-w-7xl flex-col overflow-y-scroll rounded-xl bg-white shadow-sm ring-1 ring-gray-200">
               <Header />
               <RoutesProvider />
             </div>
