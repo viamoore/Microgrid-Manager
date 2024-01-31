@@ -5,6 +5,7 @@ import useEGaugeConfigStore from "./store";
 import PanelChart from "./panelChart";
 
 import type { Config, eGaugeData, eGaugeDataStream } from "./eGaugeTypes";
+import { Plus } from "lucide-react";
 
 interface eGaugePannel {
   config: Config;
@@ -126,15 +127,35 @@ const ChartCarousel: React.FC = () => {
   }, [eGaugeSources, dataLoaded]);
 
   return (
-    <dl className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
-      {eGaugeInfo.map((eGaugeInstance, i) => (
-        <PanelChart
-          key={eGaugeInstance.config.name}
-          index={i}
-          data={eGaugeInstance.data}
-        />
-      ))}
-    </dl>
+    <div className="relative flex w-full flex-col rounded-lg bg-white p-4 ring-1 ring-gray-100">
+      <h2 className="text-xl font-medium">EGauge Summary</h2>
+      <p className="text-gray-500">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit
+      </p>
+
+      <div className="mx-auto mt-6 grid w-full grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {eGaugeInfo.map((eGaugeInstance, i) => (
+          <PanelChart
+            key={eGaugeInstance.config.name}
+            index={i}
+            data={eGaugeInstance.data}
+          />
+        ))}
+
+        <button
+          type="button"
+          className="relative flex w-full items-center justify-center gap-x-2 rounded-lg border-2 border-dashed border-gray-300 py-4 text-center hover:border-gray-400 focus:outline-none sm:flex-col sm:gap-x-0 sm:py-0"
+        >
+          <Plus
+            aria-hidden="true"
+            className="h-4 w-4 text-center sm:h-5 sm:w-5"
+          />
+          <span className="block text-sm font-medium text-gray-900 sm:mt-2">
+            New source
+          </span>
+        </button>
+      </div>
+    </div>
   );
 };
 

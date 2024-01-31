@@ -87,109 +87,209 @@ const PanelChart: React.FC<PanelChartProps> = ({ index, data }) => {
   };
 
   return (
-    <div className="relative overflow-hidden rounded-lg bg-gray-100 px-4 py-5 shadow-sm sm:p-6">
-      <dt className="truncate text-sm font-medium text-gray-500">
-        {configState.name}
-      </dt>
-      <dd className="mt-1 text-3xl font-semibold tracking-tight text-gray-900">
+    <div className="group relative bg-white">
+      <div className="rounded-sm bg-gray-100">
+        <div className="ml-1 flex justify-between bg-white pl-2">
+          <div className="flex flex-col">
+            <h3 className="text-lg font-medium">{configState.name}</h3>
+            <Button className="h-fit w-fit bg-transparent p-0 font-normal text-gray-400 hover:bg-transparent hover:text-gray-950">
+              View more
+            </Button>
+          </div>
+
+          <Popover
+            open={showConfig}
+            onOpenChange={(isOpen) => {
+              if (!isOpen) setConfigState(config[index]);
+
+              setShowConfig(isOpen);
+            }}
+          >
+            <PopoverTrigger asChild>
+              <Button
+                variant="ghost"
+                className="m-[5px] h-4 p-0 text-gray-500 hover:bg-transparent hover:text-gray-950"
+                onClick={() => setShowConfig(!showConfig)}
+              >
+                <Settings
+                  className="h-4 w-4"
+                  aria-label={`${configState.name} settings`}
+                />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-80">
+              <span>{`${configState.name} settings`}</span>
+
+              <div className="space-y-2">
+                {Object.entries(configState).map(([key, value]) => (
+                  <div key={key}>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Label htmlFor={key}>{key}</Label>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>{tooltipInfo[key]}</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                    {key === "source" || key === "name" ? (
+                      <Input
+                        id={key}
+                        placeholder={value}
+                        onChange={(e) => handleEditInput(key, e.target.value)}
+                      />
+                    ) : (
+                      <Select
+                        value={configState["period"]}
+                        defaultValue={value}
+                        onValueChange={(value: string) =>
+                          handleEditInput("period", value)
+                        }
+                      >
+                        <SelectTrigger id={key}>
+                          <SelectValue placeholder="How far back should the data be displayed" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectGroup>
+                            <SelectLabel>Period</SelectLabel>
+                            {displayOptions.map((option) => (
+                              <SelectItem
+                                value={option.value}
+                                key={option.value}
+                              >
+                                {option.value}
+                              </SelectItem>
+                            ))}
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-4 text-right">
+                <Button onClick={handleSave}>Save</Button>
+              </div>
+            </PopoverContent>
+          </Popover>
+        </div>
+      </div>
+
+      <div className="mt-2 pl-3 text-2xl font-medium">
         <span>
           {data.length > 0
             ? Number(data[data.length - 1].value).toFixed(2)
             : "0"}
         </span>
         <span>{data.length > 0 ? data[data.length - 1].unit : "W"}</span>
-      </dd>
-
-      <Popover
-        open={showConfig}
-        onOpenChange={(isOpen) => {
-          if (!isOpen) setConfigState(config[index]);
-
-          setShowConfig(isOpen);
-        }}
-      >
-        <PopoverTrigger asChild>
-          <Button
-            variant="ghost"
-            className="absolute right-0 top-0 m-3.5"
-            onClick={() => setShowConfig(!showConfig)}
-          >
-            <Settings
-              className="h-4 w-4"
-              aria-label={`${configState.name} settings`}
-            />
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-80">
-          <span>{`${configState.name} settings`}</span>
-
-          <div className="space-y-2">
-            {Object.entries(configState).map(([key, value]) => (
-              <div key={key}>
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Label htmlFor={key}>{key}</Label>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>{tooltipInfo[key]}</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-                {key === "source" || key === "name" ? (
-                  <Input
-                    id={key}
-                    placeholder={value}
-                    onChange={(e) => handleEditInput(key, e.target.value)}
-                  />
-                ) : (
-                  <Select
-                    value={configState["period"]}
-                    defaultValue={value}
-                    onValueChange={(value: string) =>
-                      handleEditInput("period", value)
-                    }
-                  >
-                    <SelectTrigger id={key}>
-                      <SelectValue placeholder="How far back should the data be displayed" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectLabel>Period</SelectLabel>
-                        {displayOptions.map((option) => (
-                          <SelectItem value={option.value} key={option.value}>
-                            {option.value}
-                          </SelectItem>
-                        ))}
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                )}
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-4 text-right">
-            <Button onClick={handleSave}>Save</Button>
-          </div>
-        </PopoverContent>
-      </Popover>
-
-      {/* <div
-        className={`${collapsed ? "pointer-events-none h-0 opacity-0" : "h-[" + height + "] mt-2 p-2 opacity-100"} 
-        relative w-full flex-grow rounded-lg bg-white transition-all duration-100`}
-        ref={parentRef}
-      >
-        <PanelChartSVG
-          height={150}
-          width={250}
-          data={data}
-          unit={"W"}
-          parent={parentRef}
-          config={configState}
-        />
-      </div> */}
+      </div>
     </div>
+    // <div className="relative flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2 bg-white px-4 py-4 sm:px-6 xl:px-8">
+    //   <dt className="text-sm font-medium leading-6 text-gray-500">
+    //     {configState.name}
+    //   </dt>
+
+    //   <dd className="w-full flex-none text-3xl font-medium leading-10 tracking-tight text-gray-900">
+    //     <span>
+    //       {data.length > 0
+    //         ? Number(data[data.length - 1].value).toFixed(2)
+    //         : "0"}
+    //     </span>
+    //     <span>{data.length > 0 ? data[data.length - 1].unit : "W"}</span>
+    //   </dd>
+
+    //   <Popover
+    //     open={showConfig}
+    //     onOpenChange={(isOpen) => {
+    //       if (!isOpen) setConfigState(config[index]);
+
+    //       setShowConfig(isOpen);
+    //     }}
+    //   >
+    //     <PopoverTrigger asChild>
+    //       <Button
+    //         variant="ghost"
+    //         className="absolute right-0 top-0 m-3.5"
+    //         onClick={() => setShowConfig(!showConfig)}
+    //       >
+    //         <Settings
+    //           className="h-4 w-4"
+    //           aria-label={`${configState.name} settings`}
+    //         />
+    //       </Button>
+    //     </PopoverTrigger>
+    //     <PopoverContent className="w-80">
+    //       <span>{`${configState.name} settings`}</span>
+
+    //       <div className="space-y-2">
+    //         {Object.entries(configState).map(([key, value]) => (
+    //           <div key={key}>
+    //             <TooltipProvider>
+    //               <Tooltip>
+    //                 <TooltipTrigger asChild>
+    //                   <Label htmlFor={key}>{key}</Label>
+    //                 </TooltipTrigger>
+    //                 <TooltipContent>
+    //                   <p>{tooltipInfo[key]}</p>
+    //                 </TooltipContent>
+    //               </Tooltip>
+    //             </TooltipProvider>
+    //             {key === "source" || key === "name" ? (
+    //               <Input
+    //                 id={key}
+    //                 placeholder={value}
+    //                 onChange={(e) => handleEditInput(key, e.target.value)}
+    //               />
+    //             ) : (
+    //               <Select
+    //                 value={configState["period"]}
+    //                 defaultValue={value}
+    //                 onValueChange={(value: string) =>
+    //                   handleEditInput("period", value)
+    //                 }
+    //               >
+    //                 <SelectTrigger id={key}>
+    //                   <SelectValue placeholder="How far back should the data be displayed" />
+    //                 </SelectTrigger>
+    //                 <SelectContent>
+    //                   <SelectGroup>
+    //                     <SelectLabel>Period</SelectLabel>
+    //                     {displayOptions.map((option) => (
+    //                       <SelectItem value={option.value} key={option.value}>
+    //                         {option.value}
+    //                       </SelectItem>
+    //                     ))}
+    //                   </SelectGroup>
+    //                 </SelectContent>
+    //               </Select>
+    //             )}
+    //           </div>
+    //         ))}
+    //       </div>
+
+    //       <div className="mt-4 text-right">
+    //         <Button onClick={handleSave}>Save</Button>
+    //       </div>
+    //     </PopoverContent>
+    //   </Popover>
+
+    //   {/* <div
+    //     className={`${collapsed ? "pointer-events-none h-0 opacity-0" : "h-[" + height + "] mt-2 p-2 opacity-100"}
+    //     relative w-full flex-grow rounded-lg bg-white transition-all duration-100`}
+    //     ref={parentRef}
+    //   >
+    //     <PanelChartSVG
+    //       height={150}
+    //       width={250}
+    //       data={data}
+    //       unit={"W"}
+    //       parent={parentRef}
+    //       config={configState}
+    //     />
+    //   </div>
+    // </div>*/}
   );
 };
 

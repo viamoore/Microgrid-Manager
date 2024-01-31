@@ -16,25 +16,28 @@ const Dashboard = () => {
   ];
 
   return (
-    <div className="flex h-full w-full flex-col gap-y-2 p-4">
-      <div className="flex flex-col rounded-lg bg-gray-200 p-2 shadow-sm">
-        <h1 className="mb-4 w-full rounded-sm bg-yellow-400 p-2 text-red-600">
+    <div className="flex h-full w-full flex-col gap-y-4 px-4 py-6">
+      <h1 className="text-2xl font-semibold">Dashboard</h1>
+
+      {/* <div className="flex flex-col rounded-lg p-2 shadow ring-1 ring-gray-100">
+        <h2 className="mb-4 w-full rounded-sm bg-yellow-400 p-2 text-red-600">
           WORK IN PROGRESS
-        </h1>
+        </h2>
+
         <div>Recommendation:</div>
         <div>Body</div>
-      </div>
+      </div> */}
 
-      <div className="col-span-full col-start-1 rounded-lg shadow-sm">
+      <div className="rounded-lg shadow">
         <ChartCarousel />
       </div>
 
-      <div className="flex w-full flex-row gap-x-2">
-        <div className="relative flex w-3/4 flex-col rounded-lg bg-gray-100 p-4 shadow-sm">
+      <div className="mt-2 flex w-full flex-row gap-x-6">
+        <div className="w-3/4">
           <BatteryChart />
         </div>
 
-        <div className="w-full rounded-lg bg-gray-200">
+        <div className="w-full">
           <WidgetLayout widgets={widgets} />
         </div>
       </div>

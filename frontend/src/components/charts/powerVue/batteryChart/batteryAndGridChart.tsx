@@ -92,9 +92,9 @@ const BatteryChart = () => {
   };
 
   return (
-    <div className="group flex h-auto w-full flex-grow flex-col">
-      <div className="flex justify-between px-2 text-lg">
-        <h2>Solar & Battery Status</h2>
+    <div className="group flex h-auto w-full flex-grow flex-col rounded-lg bg-white p-4 shadow ring-1 ring-gray-100">
+      <div className="flex justify-between">
+        <h2 className="text-xl font-medium">Solar & Battery Status</h2>
 
         <Popover
           open={showConfig}
@@ -107,7 +107,7 @@ const BatteryChart = () => {
           <PopoverTrigger asChild>
             <Button
               variant="ghost"
-              className="absolute right-0 top-0 m-3.5 h-8 px-2 py-2"
+              className="m-1.5 h-4 p-0 text-gray-500 hover:bg-transparent hover:text-gray-950"
               onClick={() => {
                 setShowConfig(!showConfig);
                 setConfigState(config.batteryChartConfigs);
