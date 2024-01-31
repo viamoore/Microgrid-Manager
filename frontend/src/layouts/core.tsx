@@ -64,14 +64,14 @@ const CoreLayout = () => {
         <ResizableHandle />
         <ResizablePanel
           order={1}
-          className="flex min-h-screen w-full !min-w-[600px] flex-col justify-between"
+          className="flex min-h-screen w-full flex-col justify-between"
         >
-          <Content className="w-full bg-gray-100 p-2">
+          <div className="h-screen w-full bg-gray-100 p-2">
             <div className="h-full w-full overflow-y-scroll rounded-xl bg-white shadow-sm ring-1 ring-gray-200">
               <Header />
               <RoutesProvider />
             </div>
-          </Content>
+          </div>
         </ResizablePanel>
       </ResizablePanelGroup>
     </div>
