@@ -16,7 +16,7 @@ const Dashboard = () => {
   ];
 
   return (
-    <div className="flex h-full w-full flex-col gap-y-4 px-4 py-6">
+    <div className="flex h-full w-full flex-col gap-y-4 p-6">
       <h1 className="text-2xl font-semibold">Dashboard</h1>
 
       {/* <div className="flex flex-col rounded-lg p-2 shadow ring-1 ring-gray-100">
