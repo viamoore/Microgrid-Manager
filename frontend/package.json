@@ -13,6 +13,7 @@
   "dependencies": {
     "@ant-design/cssinjs": "^1.18.0",
     "@ant-design/icons": "^5.2.6",
+    "@nivo/line": "^0.84.0",
     "@nivo/radial-bar": "^0.84.0",
     "@radix-ui/react-collapsible": "^1.0.3",
     "@radix-ui/react-label": "^2.0.2",

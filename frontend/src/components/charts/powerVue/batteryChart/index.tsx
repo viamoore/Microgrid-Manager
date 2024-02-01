@@ -32,14 +32,14 @@ const BatteryChart = () => {
   }, []);
 
   return (
-    <div className="group flex h-auto w-full flex-grow flex-col rounded-lg bg-white p-4 shadow ring-1 ring-gray-100">
+    <div className="group flex h-full w-full flex-grow flex-col rounded-lg bg-white p-4 shadow ring-1 ring-gray-100">
       <div className="flex justify-between">
         <h2 className="text-xl font-medium">Solar & Battery Status</h2>
       </div>
 
       <BatteryGauge dataStream={dataStream} capacity={mockData.capacity} />
 
-      <div className="-mt-2 flex items-center justify-evenly pb-2">
+      <div className="-mt-2 flex items-center justify-evenly">
         <div className="flex flex-col items-center gap-x-2">
           <BatteryMedium className="h-5 w-5 scale-125 text-gray-500" />
           <span className="mt-1 text-2xl font-medium text-blue-600">
