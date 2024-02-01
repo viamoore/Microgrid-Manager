@@ -1,14 +1,13 @@
-import WeatherWidget from "../../components/widget/weather";
+import EGauge from "./eGauge";
+import Battery from "./battery";
+import EnergyGeneration from "./energyGeneration";
 import { WidgetLayout } from "../../layouts";
-import ChartCarousel from "../../components/charts/eGauge";
-import { Widget, WidgetComponent } from "../../interfaces/JSXTypes";
-import { BatteryChart } from "../../components";
+import WeatherWidget from "../../components/widget/weather";
 import WaterTankWidget from "../../components/widget/waterTank";
 import HVACWidget from "../../components/widget/hvac";
+import { Widget, WidgetComponent } from "../../interfaces/JSXTypes";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import GenerationChart from "../../components/charts/powerVue/energyGeneration";
 
-// Dashboard is grid composed of 12 columns.
 const DashboardPage = () => {
   const widgets: React.ReactElement<Widget, WidgetComponent>[] = [
     <WeatherWidget />,
@@ -30,15 +29,13 @@ const DashboardPage = () => {
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-5">
         <div className="col-span-1 rounded-lg shadow sm:col-span-2 md:col-span-5">
-          <ChartCarousel />
+          <EGauge />
         </div>
-
         <div className="col-span-1 rounded-lg shadow sm:col-span-1 md:col-span-2">
-          <BatteryChart />
+          <Battery />
         </div>
-
         <div className="col-span-1 rounded-lg shadow sm:col-span-1 md:col-span-3">
-          <GenerationChart />
+          <EnergyGeneration />
         </div>
 
         <div className="col-span-1 rounded-lg shadow sm:col-span-1 md:col-span-3">
