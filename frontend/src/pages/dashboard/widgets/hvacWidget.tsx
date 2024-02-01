@@ -84,11 +84,11 @@ const HVACWidget = () => {
           <span className="text-lg font-medium">
             {hvacData?.temperature}°{hvacData?.unit}
           </span>
-          <img src={hvac} className="h-8 w-8" />
+          <img src={hvac} className="h-7 w-7" />
         </div>
       </div>
 
-      <div className="flex h-auto w-full flex-row justify-evenly">
+      <div className="mt-2 flex h-auto w-full flex-row justify-evenly">
         <div className="flex h-full w-full flex-col text-sm">
           {hvacConfig.map((config, index) => {
             return (

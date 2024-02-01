@@ -37,12 +37,14 @@ const BatteryChart = () => {
         <h2 className="text-xl font-medium">Solar & Battery Status</h2>
       </div>
 
-      <BatteryGauge dataStream={dataStream} capacity={mockData.capacity} />
+      <div className="-mt-4 md:-mt-8">
+        <BatteryGauge dataStream={dataStream} capacity={mockData.capacity} />
+      </div>
 
-      <div className="-mt-4 flex items-center justify-evenly">
+      <div className="-mt-8 flex items-center justify-evenly md:-mt-8">
         <div className="flex flex-col items-center gap-x-2">
           <BatteryMedium className="h-5 w-5 scale-125 text-gray-500" />
-          <span className="mt-1 text-2xl font-medium text-blue-600">
+          <span className="mt-1 text-xl font-medium text-blue-600 md:text-lg lg:text-xl">
             {mockData.capacity / 1000}kWh
           </span>
           <h3 className="mt-0.5 text-sm text-gray-600">Capacity</h3>
@@ -54,7 +56,7 @@ const BatteryChart = () => {
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <span className="mt-1 text-2xl font-medium text-emerald-600">
+                <span className="mt-1 text-xl font-medium text-emerald-600 md:text-lg lg:text-xl">
                   Low risk
                 </span>
               </TooltipTrigger>

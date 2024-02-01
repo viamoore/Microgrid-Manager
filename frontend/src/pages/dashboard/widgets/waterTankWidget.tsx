@@ -89,11 +89,11 @@ const WaterTankWidget = () => {
           <span className="text-lg font-medium">
             {waterData.temperature}°{waterData.unit}
           </span>
-          <img src={waterTank} className="h-8 w-8" />
+          <img src={waterTank} className="h-7 w-7" />
         </div>
       </div>
 
-      <div className="flex h-auto w-full flex-row justify-evenly">
+      <div className="mt-2 flex h-auto w-full flex-row justify-evenly">
         <div className="flex h-full w-full flex-col text-sm">
           {waterTankConfig.map((config, index) => {
             return (

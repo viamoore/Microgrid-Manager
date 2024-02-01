@@ -43,7 +43,7 @@ const WeatherWidget = () => {
         />
       </div>
 
-      <div className="mt-4 flex flex-col items-center sm:mt-16 lg:mt-4">
+      <div className="mt-4 flex flex-col items-center sm:mt-10 lg:mt-6">
         <div>
           {weatherData
             .filter((_, index) => index % 2 === 0)
@@ -56,7 +56,7 @@ const WeatherWidget = () => {
                   src={data.icon}
                   className="h-44 w-44 rounded-full bg-gray-100 shadow-sm ring-1 ring-gray-200 lg:h-32 lg:w-32"
                 />
-                <div className="mt-4 text-center sm:mt-8 lg:mt-4">
+                <div className="mt-4 text-center sm:mt-10 lg:mt-4">
                   <p className="text-xs text-gray-600">
                     {new Date(data.startTime).toLocaleDateString("en-US", {
                       weekday: "long",
