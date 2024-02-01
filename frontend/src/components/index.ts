@@ -3,7 +3,8 @@ import Header from "./header";
 // import HeaderComponent from "./header/header";
 // import SidebarComponent from "./sidebar/sidebar";
 
-import BatteryChart from "./charts/powerVue/batteryChart/batteryAndGridChart";
+// import BatteryChart from "./charts/powerVue/batteryChart/batteryAndGridChart";
+import BatteryChart from "./charts/powerVue/batteryChart";
 import WeatherWidget from "./widget/weather";
 
 export { Sidebar, Header, WeatherWidget, BatteryChart };
