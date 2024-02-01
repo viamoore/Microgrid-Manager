@@ -50,7 +50,8 @@ const data = [
 
 const GenerationChart = () => {
   return (
-    <div className="h-full w-full">
+    <div className="relative flex h-full w-full flex-col rounded-lg bg-white p-4 ring-1 ring-gray-100">
+      <h2 className="text-xl font-medium">Energy Generation</h2>
       <EnergyGenerationChart data={data} />
     </div>
   );

@@ -10,7 +10,7 @@ const EnergyGenerationChart = (props: {
   return (
     <ResponsiveLine
       data={props.data}
-      margin={{ top: 20, right: 20, bottom: 60, left: 60 }}
+      margin={{ top: 20, right: 20, bottom: 50, left: 60 }}
       xScale={{ type: "time", format: "%Y-%m-%dT%H:%M:%S.%L%Z" }}
       yScale={{
         type: "linear",
@@ -59,7 +59,7 @@ const EnergyGenerationChart = (props: {
           direction: "row",
           justify: false,
           translateX: 20,
-          translateY: -10,
+          translateY: -24,
           itemsSpacing: 0,
           itemDirection: "left-to-right",
           itemWidth: 80,

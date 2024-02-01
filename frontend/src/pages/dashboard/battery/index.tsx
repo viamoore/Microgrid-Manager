@@ -39,7 +39,7 @@ const BatteryChart = () => {
 
       <BatteryGauge dataStream={dataStream} capacity={mockData.capacity} />
 
-      <div className="-mt-2 flex items-center justify-evenly">
+      <div className="-mt-4 flex items-center justify-evenly">
         <div className="flex flex-col items-center gap-x-2">
           <BatteryMedium className="h-5 w-5 scale-125 text-gray-500" />
           <span className="mt-1 text-2xl font-medium text-blue-600">
