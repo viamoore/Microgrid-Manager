@@ -50,7 +50,7 @@ const items_mock: MenuProps["items"] = [
   getItem("Settings", "/settings", <SettingOutlined />),
 ];
 
-const SidebarContent = ({ collapsed }: { collapsed: boolean }) => {
+const SidebarContent = () => {
   const navigate = useNavigate();
   const [selectedKey, selectKey] = useState([""]);
   const pathname = window.location.pathname.toLowerCase();
@@ -90,7 +90,7 @@ const SidebarContent = ({ collapsed }: { collapsed: boolean }) => {
   return (
     <div>
       <div
-        className={`m-3 overflow-hidden rounded-lg bg-gray-400 py-2 text-center ${collapsed ? "" : ""}`}
+        className={`m-3 overflow-hidden rounded-lg bg-gray-400 py-2 text-center`}
       >
         Microgrid Manager
       </div>

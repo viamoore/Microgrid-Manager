@@ -13,7 +13,7 @@ describe("SidebarContent", () => {
     await act(async () => {
       render(
         <BrowserRouter>
-          <SidebarContent collapsed={false} />
+          <SidebarContent />
         </BrowserRouter>,
       );
     });
@@ -34,7 +34,7 @@ describe("SidebarContent", () => {
   test("selects the active menu item based on the current pathname", async () => {
     render(
       <BrowserRouter>
-        <SidebarContent collapsed={false} />
+        <SidebarContent />
       </BrowserRouter>,
     );
 
@@ -52,7 +52,7 @@ describe("SidebarContent", () => {
 
     render(
       <BrowserRouter>
-        <SidebarContent collapsed={false} />
+        <SidebarContent />
       </BrowserRouter>,
     );
 

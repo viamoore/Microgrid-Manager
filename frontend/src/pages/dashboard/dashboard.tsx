@@ -14,7 +14,6 @@ const Dashboard = () => {
     <WaterTankWidget />,
     <HVACWidget />,
   ];
-
   return (
     <div className="flex h-full w-full flex-col gap-y-2 p-4">
       <div className="flex flex-col rounded-lg bg-gray-200 p-2 shadow-sm">

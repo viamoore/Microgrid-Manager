@@ -1,7 +1,7 @@
-import { Config, DataStream } from "./batteryChartTypes";
-
 import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import * as d3 from "d3";
+
+import type { Config, DataStream } from "./batteryChartTypes";
 
 interface batteryCapacitySVGProps {
   data: DataStream;
@@ -12,8 +12,9 @@ interface batteryCapacitySVGProps {
 }
 
 const BatteryCapacitySVG: React.FC<batteryCapacitySVGProps> = (props) => {
-  const svgRef = useRef<SVGSVGElement | null>(null);
   const { width, height, data, capacity, config } = props;
+
+  const svgRef = useRef<SVGSVGElement | null>(null);
   const size = Math.min(width, height);
   const radius = size / 2;
   const rootAngle = Math.PI * 1.25;
@@ -42,6 +43,7 @@ const BatteryCapacitySVG: React.FC<batteryCapacitySVGProps> = (props) => {
     ) => {
       const startAngle = rootAngle + Math.PI * startPercentage * 1.5;
       const endAngle = rootAngle + Math.PI * endPercentage * 1.5;
+
       animateArc
         .transition()
         .duration(config.animationSpeed)
@@ -173,25 +175,29 @@ const BatteryCapacitySVG: React.FC<batteryCapacitySVGProps> = (props) => {
     }
 
     // Text elements
+    if (!isNaN(percentage)) {
+      svg
+        .append("text")
+        .attr("text-anchor", "middle")
+        .attr("dy", `-${size / 7}px`)
+        .style("font-size", `${size / 12}px`)
+        .text(`${(percentage * 100).toFixed(2)}%`);
+    }
+
+    if (dataStream.pac !== undefined) {
+      svg
+        .append("text")
+        .attr("text-anchor", "middle")
+        .style("font-size", `${size / 8}px`)
+        .style("fill", dataStream.pac <= 0 ? "#FF5733" : "#4CAF50")
+        .text(`${dataStream.pac} (W)`);
+    }
+
     svg
       .append("text")
       .attr("text-anchor", "middle")
-      .attr("dy", `-${size / 5}px`)
+      .attr("dy", `${size / 6}px`)
       .style("font-size", `${size / 12}px`)
-      .text(`${(percentage * 100).toFixed(2)}%`);
-
-    svg
-      .append("text")
-      .attr("text-anchor", "middle")
-      .style("font-size", `${size / 8}px`)
-      .style("fill", dataStream.pac <= 0 ? "#FF5733" : "#4CAF50")
-      .text(`${dataStream.pac} (W)`);
-
-    svg
-      .append("text")
-      .attr("text-anchor", "middle")
-      .attr("dy", `${size / 5}px`)
-      .style("font-size", `${size / 10}px`)
       .style("fill", onGrid ? "#4CAF50" : "#FF5733")
       .text(onGrid ? "On Grid" : "Off Grid");
 
