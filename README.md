@@ -2,71 +2,16 @@
 CSE 115D Project
 
 ## Why Mircogrid Manager
+Microgrid Manager serves as an intuitive UI interface for non-technical people to efficiently operate their home's power system.
 
-## Install
+## Setup
+This project requires Docker Desktop or some form of Docker on that system. Install that first.
 
-### Linux / Unix
-
-```bash
-  curl -O https://raw.githubusercontent.com/EJX537/Microgrid/main/deployment/install.sh | bash
-```
-
-### Windows
-
-With Git bash:
-```bash
-curl -O https://raw.githubusercontent.com/EJX537/Microgrid/main/deployment/install.sh && ./install.sh
-```
-
-If there is a ssl error, run it with flag -k
-
-Download the file from [github](https://github.com/EJX537/Microgrid/blob/main/deployment/install.sh)
-
-or download it in powershell using:
-
-```
-Invoke-WebRequest -Uri "https://raw.githubusercontent.com/EJX537/Microgrid/main/deployment/install.sh" -OutFile "install.sh"
-```
-
-then running it using bash:
-
-Install [WSL(Windows Subsysyem for Linux)](https://www.thewindowsclub.com/how-to-run-sh-or-shell-script-file-in-windows-10)
-
-Or Install it Manually in PowerShell:
-```
-  # Chocolatey is not installed. Install it
-  @powershell -NoProfile -ExecutionPolicy Bypass -Command "iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))" && SET   "PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin"
-
-  # Install Docker using Chocolatey
-  choco install -y docker docker-compose
-
-  # Create a new directory in the /Program\ Files directory
-  mkdir -p "\Program Files\Microgrid Manager"
-
-	# Change to the /Program\ Files directory
-	cd "\Program Files\Microgrid Manager"
-
-	# Make a folder for the database
-	mkdir "database"
-
-  # Download the docker-compose.yaml file and the update.sh file
-  curl -O https://raw.githubusercontent.com/EJX537/Microgrid/test-deployment/dist/docker-compose.yaml
-  curl -O https://raw.githubusercontent.com/EJX537/Microgrid/test-deployment/dist/update.sh
-
-  # Make the update.sh file executable
-  chmod +x update.sh
-
-  # Run the services
-  docker-compose up -d
-
-```
-
-Finally run the install.sh file
-
-## Update
-Update from the web app
-
-or run the update.sh /path/to/Microgrid\ Manager
+## Running the app
+In the root, run `docker compose up -d` make sure your docker client is on.
+Navigate into the frontend folder, do `npm install`, then `npm run dev`
+Frontend runs on port 5173
+Backend runs on port 8080
 
 ## Technical Specs
 
