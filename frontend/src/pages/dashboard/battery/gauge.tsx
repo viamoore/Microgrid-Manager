@@ -1,6 +1,5 @@
 import { useCallback, useState, useEffect } from "react";
-
-import { ResponsiveRadialBar } from "@nivo/radial-bar";
+import { RadialBarChart, RadialBar } from "recharts";
 import { cx } from "class-variance-authority";
 
 import type { DataStream } from "./batteryChartTypes";
@@ -12,13 +11,8 @@ export default function BatteryGauge(props: {
   const { dataStream, capacity } = props;
   const [chartData, setChartData] = useState([
     {
-      id: "batteryGauge",
-      data: [
-        {
-          x: "",
-          y: 0,
-        },
-      ],
+      name: "batteryGauge",
+      value: 0,
     },
   ]);
 
@@ -34,7 +28,7 @@ export default function BatteryGauge(props: {
     const onGrid = dataStream.gridTo || dataStream.toGrid;
     const percentage = dataStream.soc / 100;
     const projectedWatt = dataStream.battPower + capacity * percentage;
-    const projectedPercentage = projectedWatt / capacity;
+    const projectedPercentage = (projectedWatt / capacity) * 100;
     const isCharging = projectedWatt > capacity * percentage;
 
     setConfig({
@@ -46,13 +40,8 @@ export default function BatteryGauge(props: {
     });
     setChartData([
       {
-        id: "batteryGauge",
-        data: [
-          {
-            x: "",
-            y: percentage * 100,
-          },
-        ],
+        name: "batteryGauge",
+        value: percentage * 100,
       },
     ]);
   }, [dataStream, capacity]);
@@ -63,39 +52,33 @@ export default function BatteryGauge(props: {
 
   return (
     <div className="relative">
-      <div className="relative flex h-80 w-full items-center justify-center">
-        <ResponsiveRadialBar
+      <div className="relative flex h-200 w-200 items-center justify-center">
+        <RadialBarChart
+          width={500}
+          height={500}
+          innerRadius="65%"
+          outerRadius="80%"
           data={chartData}
-          margin={{ top: 0, right: 0, bottom: -25, left: 0 }}
-          valueFormat=">-.2f"
-          maxValue={100}
-          startAngle={225}
-          endAngle={495}
-          padding={0.75}
-          cornerRadius={3}
-          radialAxisStart={null}
-          circularAxisOuter={null}
-          enableCircularGrid={false}
-          enableRadialGrid={false}
-          colors="#34d399"
-          tooltip={({ bar }) => {
-            return (
-              <div className="rounded bg-white px-2.5 py-0.5 shadow ring-1 ring-gray-100">
-                <span className="text-xs">{bar.data.y}%</span>
-              </div>
-            );
-          }}
-        />
+          startAngle={315}
+          endAngle={585}
+        >
+          <RadialBar
+            label={{ position: "insideStart", fill: "#fff" }}
+            background
+            dataKey="value"
+            fill="#34d399"
+          />
+        </RadialBarChart>
       </div>
       <div className="absolute left-1/2 top-1/2 mt-2.5 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center">
         {!isNaN(config.percentage) && (
-          <div>{(config.percentage * 100).toFixed(2)}%</div>
+          <div className="text-lg">{(config.percentage)*100}%</div>
         )}
         {dataStream.pac !== undefined && (
           <div
             className={cx(
               dataStream.pac <= 0 ? "text-rose-500" : "text-emerald-500",
-              "mt-1 text-4xl font-semibold",
+              "mt-1 text-3xl font-semibold",
             )}
           >
             {dataStream.pac} (W)
@@ -104,7 +87,7 @@ export default function BatteryGauge(props: {
         <div
           className={cx(
             !config.onGrid ? "text-rose-500" : "text-emerald-500",
-            "mt-2.5 text-lg font-medium",
+            "mt-2.5 text-md font-medium",
           )}
         >
           {config.onGrid ? "On grid" : "Off grid"}
