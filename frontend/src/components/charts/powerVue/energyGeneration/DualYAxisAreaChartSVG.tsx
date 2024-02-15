@@ -246,7 +246,7 @@ const DualYAxisAreaChartSVG: React.FC<DualYAxisAreaChartSVGProps> = ({
       .attr("width", 18)
       .attr("height", 18)
       .style("fill", (d) =>
-        d === "eGuage" ? "steelblue" : d === "battery" ? "green" : "orange",
+        d === "eGauge" ? "steelblue" : d === "battery" ? "green" : "orange",
       ); // Todo: Color From Source
 
     legendItem

@@ -19,7 +19,7 @@ for (let i = 1; i < 60; i++) {
 const data1: DataTypeWattHour[] = dateTime.map((entry) => ({
   dateTime: entry,
   watt: Math.floor(Math.random() * 8001) - 3000,
-  source: "eGuage",
+  source: "eGauge",
 }));
 
 const data2: DataTypeWattHour[] = dateTime.map((entry) => ({
@@ -35,7 +35,7 @@ const data3: DataTypeWattHour[] = dateTime.map((entry) => ({
 }));
 
 const data = {
-  eGuage: data1,
+  eGauge: data1,
   battery: data2,
   PowerVue: data3,
 };

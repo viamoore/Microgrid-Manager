@@ -55,7 +55,7 @@ interface solarkConfig {
   devicestatus: boolean;
 }
 
-interface eguageConfig {
+interface egaugeConfig {
   devicename: string;
   permission_username: string;
   permission_password: string;
@@ -184,7 +184,7 @@ app.get("/egaugetime", async (req: Request, res: Response) => {
 });
 
 //powerview get start and end timestamp
-app.get("/eguageperiod", async (req: Request, res: Response) => {
+app.get("/egaugeperiod", async (req: Request, res: Response) => {
   try {
     const start = req.query?.start as string;
     const end = req.query?.end as string;
@@ -278,7 +278,7 @@ let solarkconfig: solarkConfig = {
   devicestatus: false,
 };
 
-let eguageconfig: solarkConfig = {
+let egaugeconfig: solarkConfig = {
   devicename: "Solar device name",
   permission_username: "",
   permission_password: "",
@@ -320,24 +320,24 @@ app.put("/configsolark", function getkitchen(req: Request, res: Response) {
   }
 });
 
-app.get("/configeguage", async (req: Request, res: Response) => {
+app.get("/configegauge", async (req: Request, res: Response) => {
   try {
-    res.send(eguageconfig);
+    res.send(egaugeconfig);
   } catch (err) {
     console.log(err);
   }
 });
 
-app.put("/configeguage", function getkitchen(req: Request, res: Response) {
+app.put("/configegauge", function getkitchen(req: Request, res: Response) {
   try {
-    eguageconfig = {
+    egaugeconfig = {
       devicename: req.query?.devicename as string,
       permission_username: req.query?.permission_username as string,
       permission_password: req.query?.permission_password as string,
       outlink: req.query?.outlink as string,
       devicestatus: req.query?.devicestatus == "true" ? true : false,
     };
-    res.send("config eguage success");
+    res.send("config egauge success");
   } catch (err) {
     console.log(err);
   }
