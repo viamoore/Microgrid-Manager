@@ -8,11 +8,11 @@ const PowerStatusComponent = () => {
   const updatePowerStatus = (data) => {
     // Determine the power status based on the provided conditions
     let newPowerStatus = '';
-    if (data.soc === 100 && (data.toGrid || data.gridTo)) {
+    if (data.soc >= 60 && (data.toGrid || data.gridTo)) {
       newPowerStatus = 'Looking good';
-    } else if (data.soc >= 60 && (data.toGrid || data.gridTo)) {
+    } else if (data.soc >= 40 && (data.toGrid || data.gridTo)) {
       newPowerStatus = 'Check soon';
-    } else if (data.soc >= 40 && !data.toGrid && !data.gridTo) {
+    } else if (data.soc >= 20 && !data.toGrid && !data.gridTo) {
       newPowerStatus = 'Check ASAP';
     } else {
       newPowerStatus = 'Urgent';
@@ -51,8 +51,18 @@ const PowerStatusComponent = () => {
     };
   }, []); // Empty dependency array to run the effect only once on mount
 
+  // Define background color based on power status
+  const backgroundColor =
+    powerStatus === 'Looking good'
+      ? 'green'
+      : powerStatus === 'Check soon'
+      ? 'yellow'
+      : powerStatus === 'Check ASAP'
+      ? 'orange'
+      : 'red';
+
   return (
-    <div>
+    <div style={{ backgroundColor }}>
       <h1>Status: {powerStatus}</h1>
       <p>Battery: {dataStream.soc}%</p>
       <p>Grid: {dataStream.toGrid || dataStream.gridTo ? 'On' : 'Off'}</p>
