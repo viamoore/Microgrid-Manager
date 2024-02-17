@@ -2,6 +2,7 @@ import EGauge from "./eGauge";
 import Battery from "./battery";
 import EnergyGeneration from "./energyGeneration";
 import Widgets from "./widgets";
+import PowerStatusComponent from "@/components/powerStatus";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 const DashboardPage = () => {
@@ -16,6 +17,8 @@ const DashboardPage = () => {
           <div>Body</div>
         </AlertDescription>
       </Alert> */}
+
+      <PowerStatusComponent/>
 
       <div className="grid grid-cols-8 gap-4 pb-6">
         <div className="order-1 col-span-8 rounded-lg shadow">
