@@ -1,13 +1,4 @@
-import React from "react";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  Tooltip,
-  Legend,
-  CartesianGrid,
-} from "recharts";
+import { ResponsiveLine } from "@nivo/line";
 import type { DataTypeWattHour } from ".";
 
 const EnergyGenerationChart = (props: {
@@ -16,78 +7,104 @@ const EnergyGenerationChart = (props: {
     data: DataTypeWattHour[];
   }[];
 }) => {
-  const calculateTickValues = () => {
-    const { data } = props;
-    const allTimes = data.flatMap((dataset) =>
-      dataset.data.map((point) => point.x.getTime())
-    );
-
-    const sortedTimes = allTimes.sort((a, b) => a - b);
-    const interval = Math.ceil(sortedTimes.length / 5); // Calculate interval
-
-    const ticks = sortedTimes.filter((time, index) => index % interval === 0);
-
-    // Include the last time in the ticks
-    ticks.push(sortedTimes[sortedTimes.length - 1]);
-
-    return ticks;
-  };
-
   return (
-    <LineChart
-      width={700}
-      height={400}
-      data={props.data.flatMap((dataset) =>
-        dataset.data.map((point) => ({ ...point, x: point.x.getTime() }))
-      )}
+    <ResponsiveLine
+      data={props.data}
       margin={{ top: 20, right: 20, bottom: 50, left: 60 }}
-    >
-      <CartesianGrid strokeDasharray="3 3" />
-      <XAxis
-        dataKey="x"
-        type="number"
-        domain={['dataMin', 'dataMax']}
-        tickFormatter={(tick) =>
-          new Date(tick).toLocaleTimeString(undefined, {
-            hour: '2-digit',
-            minute: '2-digit',
-          })
-        }
-        ticks={calculateTickValues()}
-      />
-      <YAxis />
-      <Tooltip
-        formatter={(value, name, props) => [`${value} Watts`, name]}
-        labelFormatter={(label) => new Date(label).toLocaleString()}
-      />
-      <Legend verticalAlign="top" height={36} />
-      {props.data.map((dataset) => (
-        <Line
-          key={dataset.id}
-          type="monotone"
-          data={dataset.data.map((point) => ({
-            ...point,
-            x: point.x.getTime(),
-          }))}
-          dataKey="y"
-          name={dataset.id}
-          stroke={getColorForId(dataset.id)}
-          strokeWidth={2}
-          dot={false}
-        />
-      ))}
-    </LineChart>
+      xScale={{ type: "time", format: "%Y-%m-%dT%H:%M:%S.%L%Z" }}
+      yScale={{
+        type: "linear",
+        min: "auto",
+        max: "auto",
+        stacked: true,
+        reverse: false,
+      }}
+      yFormat=" >-.2f"
+      curve="natural"
+      axisTop={null}
+      axisRight={null}
+      axisBottom={{
+        tickSize: 5,
+        tickPadding: 5,
+        tickRotation: -45,
+        legend: "time",
+        legendOffset: 36,
+        legendPosition: "end",
+        format: "%I:%M%p",
+      }}
+      axisLeft={{
+        tickSize: 5,
+        tickPadding: 5,
+        tickRotation: 0,
+        legend: "(W)",
+        legendOffset: -40,
+        legendPosition: "end",
+      }}
+      colors={["#38bdf8", "#a78bfa", "#f472b6"]}
+      enableGridX={false}
+      lineWidth={2}
+      enablePoints={false}
+      pointSize={10}
+      pointColor={{ theme: "background" }}
+      pointBorderWidth={2}
+      pointBorderColor={{ from: "serieColor" }}
+      pointLabelYOffset={-12}
+      enableArea={false}
+      areaBlendMode="multiply"
+      areaOpacity={0.1}
+      useMesh={true}
+      legends={[
+        {
+          anchor: "top-right",
+          direction: "row",
+          justify: false,
+          translateX: 20,
+          translateY: -24,
+          itemsSpacing: 0,
+          itemDirection: "left-to-right",
+          itemWidth: 80,
+          itemHeight: 20,
+          itemOpacity: 0.75,
+          symbolSize: 12,
+          symbolShape: "circle",
+          symbolBorderColor: "rgba(0, 0, 0, .5)",
+          effects: [
+            {
+              on: "hover",
+              style: {
+                itemBackground: "rgba(0, 0, 0, .03)",
+                itemOpacity: 1,
+              },
+            },
+          ],
+        },
+      ]}
+      tooltip={({ point }) => {
+        const { x: date, y: watts } = point.data;
+        const { serieId: source, serieColor: color } = point;
+
+        return (
+          <div className="rounded bg-white px-2.5 py-1 shadow-md ring-1 ring-gray-200">
+            <div className="flex items-center gap-x-1">
+              <div
+                className="h-3 w-3 rounded-full"
+                style={{ backgroundColor: color }}
+              />
+              <span className="text-sm font-medium">{source}</span>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-xs font-semibold">
+                {watts.toString()} Watts
+              </span>
+              <span className="text-xs font-medium">
+                {new Date(date).toLocaleString()}
+              </span>
+            </div>
+          </div>
+        );
+      }}
+    />
   );
-};
-
-const getColorForId = (id: string) => {
-  const colorMap: Record<string, string> = {
-    eGauge: "#38bdf8",
-    Battery: "#a78bfa",
-    PowerVue: "#f472b6",
-  };
-
-  return colorMap[id] || "#000000";
 };
 
 export default EnergyGenerationChart;
