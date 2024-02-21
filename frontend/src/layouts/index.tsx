@@ -1,8 +1,6 @@
-import { useState, useLayoutEffect } from "react";
-
-import { Content } from "antd/es/layout/layout";
-import RoutesProvider from "../routes/routes";
-import { Header, Sidebar } from "../components";
+import React, { useState, useLayoutEffect } from "react";
+import Header from "@/components/header";
+import Sidebar from "@/components/sidebar";
 import {
   ResizableHandle,
   ResizablePanel,
@@ -11,14 +9,18 @@ import {
 
 const MIN_SIZE_IN_PIXELS = 100;
 
-const CoreLayout = () => {
+const CoreLayout = ({ children }: { children: React.ReactNode }) => {
   const [minSize, setMinSize] = useState(10);
 
   useLayoutEffect(() => {
-    const panelGroup = document.querySelector('[data-panel-group-id="layout"]');
-    const resizeHandles = document.querySelectorAll(
+    const panelGroup: HTMLDivElement | null = document.querySelector(
+      '[data-panel-group-id="layout"]',
+    );
+    const resizeHandles: NodeListOf<HTMLDivElement> = document.querySelectorAll(
       "[data-panel-resize-handle-id]",
     );
+    if (!panelGroup) return;
+
     const observer = new ResizeObserver(() => {
       let width = panelGroup.offsetWidth;
 
@@ -47,7 +49,7 @@ const CoreLayout = () => {
   const [collapsed, setCollapsed] = useState(false);
 
   return (
-    <div className="font-display flex h-auto min-h-screen w-full">
+    <div className="flex h-auto min-h-screen w-full font-display">
       <ResizablePanelGroup direction="horizontal" id="layout">
         <ResizablePanel
           order={0}
@@ -69,7 +71,7 @@ const CoreLayout = () => {
           <div className="h-screen w-full bg-gray-100 py-2 pr-2">
             <div className="flex h-full min-h-full max-w-7xl flex-col overflow-y-scroll rounded-xl bg-white shadow-sm ring-1 ring-gray-200">
               <Header />
-              <RoutesProvider />
+              {children}
             </div>
           </div>
         </ResizablePanel>

@@ -1,11 +1,10 @@
 import { useEffect, useState, useRef } from "react";
 import { readSSEResponse } from "./eGaugeDataRequester";
 import useEGaugeConfigStore from "./store";
-
 import EGaugePanel from "./eGaugePanel";
+import { Plus } from "lucide-react";
 
 import type { Config, eGaugeData, eGaugeDataStream } from "./eGaugeTypes";
-import { Plus } from "lucide-react";
 
 interface eGaugePanel {
   config: Config;

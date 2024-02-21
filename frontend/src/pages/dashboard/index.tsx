@@ -9,13 +9,13 @@ const DashboardPage = () => {
     <div className="flex h-full w-full flex-col gap-y-4 p-6">
       <h1 className="text-2xl font-semibold">Dashboard</h1>
 
-      {/* <Alert variant="destructive">
+      <Alert variant="destructive">
         <AlertTitle>Work in progress</AlertTitle>
         <AlertDescription className="mt-2 rounded bg-red-100/50 px-4 py-2">
           <div>Recommendation:</div>
           <div>Body</div>
         </AlertDescription>
-      </Alert> */}
+      </Alert>
 
       <div className="grid grid-cols-8 gap-4 pb-6">
         <div className="order-1 col-span-8 rounded-lg shadow">
