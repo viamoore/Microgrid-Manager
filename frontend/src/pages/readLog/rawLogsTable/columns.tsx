@@ -13,7 +13,7 @@ export type Log = {
 export const columns: ColumnDef<Log>[] = [
   {
     accessorKey: "dateTime",
-    header: ({ column }) => {
+    header: () => {
       return (
         <Button variant="ghost">
           Timestamp
