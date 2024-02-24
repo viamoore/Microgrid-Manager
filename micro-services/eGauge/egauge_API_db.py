@@ -15,10 +15,10 @@ meter_user = os.getenv("EGUSR", "ppridge1")
 meter_password = os.getenv("EGPWD", "ppridge")
 
 db_config = {
-        "host": "host.docker.internal",
-        "user": "microgridManager",
-        "password": "sluggrid",
-        "database": "microgridManager",
+    "host": "host.docker.internal",
+    "user": "microgridManager",
+    "password": "sluggrid",
+    "database": "microgridManager",
 }
 
 def create_database_connection(config, retry_interval=10, max_retries=3):
@@ -37,12 +37,10 @@ def create_database_connection(config, retry_interval=10, max_retries=3):
     print(f"Max retries reached. Exiting.")
     return None
 
-
 def create_egauge_config_settings_table(table_name):
     # Connect to MySQL
     connection = create_database_connection(db_config)
     
-
     # Create a cursor object to interact with the database
     cursor = connection.cursor()
 
@@ -78,7 +76,6 @@ def create_egauge_config_settings_table(table_name):
 
 # Example usage
 create_egauge_config_settings_table('egauge_config_settings_table')
-
 
 # Function to create a device with retry logic
 def create_egauge_device(dev_url, user, password, retry_interval=300, max_retries=10):
@@ -147,7 +144,6 @@ def insert_data(connection, table_name, columns, values):
         print(f"Error: {e}")
     finally:
         cursor.close()
-
 
 # Function to insert or update data in the table
 def insert_or_update_rate(table_name, nested_data, column_names):
@@ -244,7 +240,6 @@ def insert_or_update_cumulative(table_name, nested_data, column_names):
     except Exception as e:
         print(f"Error inserting data: {e}")
 
-
 while True:
     # Fetch the sensor values from the meter
     if dev:
@@ -270,11 +265,10 @@ while True:
 
     # Connect to MySQL (replace placeholders with actual values)
   
-
+  
     # Connect to MySQL database
     connection = create_database_connection(db_config)
     cursor = connection.cursor()
-
 
     # Check if the 'cumulative' table exists
     cursor.execute("SHOW TABLES LIKE 'cumulative'")
@@ -299,7 +293,7 @@ while True:
                 time TIMESTAMP,
                 PRIMARY KEY (time)
             )
-        """
+            """
         )
     columns_list_cumulative = [
         "S4_L2",
@@ -343,7 +337,7 @@ while True:
                 time TIMESTAMP,
                 PRIMARY KEY (time)
             )
-        """
+            """
         )
 
     columns_list_rate = [

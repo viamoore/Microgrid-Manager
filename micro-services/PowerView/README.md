@@ -27,11 +27,10 @@ To change how frequently the program calls the API, change the time.sleep() valu
 To change the outage detection parameters, change the outage_threshold variable.
 
 To change what database change the following variable values in the file.
-```
-db_host 
-db_user 
-db_password 
-db_name 
-```
 
-
+```
+db_host
+db_user
+db_password
+db_name
+```

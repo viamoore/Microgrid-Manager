@@ -41,8 +41,8 @@ db_config = {
     "database": db_name
 }
 
-outage_timer = 0     #keeps track of time for outages
-API_call_timer = 302 #In seconds, how frequently to do the API call. **Should be higher than 301**
+outage_timer = 0     # keeps track of time for outages
+API_call_timer = 302 # how frequently to do the API call (seconds). SHOULD BE >301
 
 def create_powerview_config_settings_table(table_name, retry_interval=3, max_retries=10):
     connection = None
@@ -116,7 +116,7 @@ def my_bearer_token():
         "password": my_user_password,
         "grant_type":"password",
         "client_id":"csp-web"
-        }
+    }
     raw_data = requests.post(loginurl, json=payload, headers=headers).json()
     # Access token extracted from response
     my_access_token = raw_data["data"]["access_token"]
@@ -126,8 +126,7 @@ def my_bearer_token():
 
 # Get plant data from plant
 def get_and_insert_data():
-
-    #get plant id from plant list
+    # get plant id from plant list
     headers_and_token = {
     'Content-type':'application/json', 
     'Accept':'application/json',
@@ -139,7 +138,7 @@ def get_and_insert_data():
     
     #print(plant_id)
 
-    #use plant id to find plant realtime data and plant flow data
+    # use plant id to find plant realtime data and plant flow data
     plant_realtime_endpoint = f"https://pv.inteless.com/api/v1/plant/{plant_id}?lan=en"
     plant_flow_endpoint = f"https://pv.inteless.com/api/v1/plant/energy/{plant_id}/flow"
 
@@ -161,11 +160,11 @@ def get_and_insert_data():
     #print(all_data)
 
 
-    #outage detection
-    outage_threshold = 30                                   #In minutes, outage threshold is how long an outage should be detected before notifying
-    global outage_timer                                     #keeps track of time
+    # outage detection
+    outage_threshold = 30                                   # In minutes, outage threshold is how long an outage should be detected before notifying
+    global outage_timer                                     # keeps track of time
     if (not all_data['gridTo'] and not all_data['toGrid']):
-        outage_timer += API_call_timer // 60                #how much time has passed
+        outage_timer += API_call_timer // 60                # how much time has passed
         if (outage_timer >= outage_threshold):
             outage_message = f"Outage longer than {outage_threshold} minutes detected"
             print(outage_message)
@@ -192,7 +191,7 @@ def insert_data(data):
         return None
     cursor = connection.cursor()
 
-    #check if powerview data table already exists & create one if not
+    # check if powerview data table already exists & create one if not
     cursor.execute("SHOW TABLES LIKE 'powerview_data'")
     table_exists = cursor.fetchone()
     if not table_exists:
@@ -297,10 +296,11 @@ def insert_data(data):
     cursor.close()
     connection.close()
 
-#main
+# main
 if __name__ == "__main__":
     my_bearer_token()
     create_powerview_config_settings_table('powerview_config_settings_table')
     while(1):
         get_and_insert_data()
         time.sleep(API_call_timer) #<< This value should be higher than 300 because the API requires at least 5 minutes to update
+        
