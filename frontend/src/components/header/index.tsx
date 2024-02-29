@@ -8,11 +8,14 @@ import {
 } from "@/components/ui/popover";
 
 import { Bell, Boxes } from "lucide-react";
+import { useLocation } from "react-router-dom";
 
 const Header = () => {
+  const { pathname } = useLocation();
+
   return (
     <div className="flex items-center justify-between border-b px-6 py-[11px]">
-      <div>Header</div>
+      <div>{pathname}</div>
       <div className="flex items-center gap-x-3">
         <Processes />
         <Notifications />
